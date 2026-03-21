@@ -20,7 +20,19 @@ export default function Installation() {
         description="Multiple ways to install xenvsync on any platform."
       />
 
-      <Section title="Go Install (Recommended)">
+      <Section title="npm (Quickest)">
+        <CodeBlock title="Install globally" language="bash">
+          {`$ npm install -g xenvsync`}
+        </CodeBlock>
+        <p className="text-sm text-[var(--color-text-muted)] mt-2">
+          Or run without installing: <code>npx xenvsync</code>
+        </p>
+        <p className="text-sm text-[var(--color-text-muted)] mt-1">
+          The npm package automatically downloads the correct binary for your platform.
+        </p>
+      </Section>
+
+      <Section title="Go Install">
         <p className="text-[var(--color-text-secondary)] mb-3">Requires Go 1.22+.</p>
         <CodeBlock title="Install" language="bash">
           {`$ go install github.com/nasimstg/xenvsync@latest`}
@@ -108,7 +120,9 @@ xenvsync v0.1.0
           Replace the binary with a newer version. Config files are forward-compatible.
         </p>
         <CodeBlock language="bash">
-          {`$ go install github.com/nasimstg/xenvsync@latest`}
+{`$ npm update -g xenvsync
+# or
+$ go install github.com/nasimstg/xenvsync@latest`}
         </CodeBlock>
       </Section>
     </div>

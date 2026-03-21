@@ -1,0 +1,5 @@
+bin/xenvsync
+bin/xenvsync.exe
+bin/*.tar.gz
+bin/*.zip
+node_modules/

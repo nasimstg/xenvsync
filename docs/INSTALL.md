@@ -1,5 +1,15 @@
 # Installation
 
+## npm (Quickest)
+
+```bash
+# Install globally
+npm install -g xenvsync
+
+# Or run without installing
+npx xenvsync
+```
+
 ## From Binary Releases (Recommended)
 
 Download the latest release for your platform from the

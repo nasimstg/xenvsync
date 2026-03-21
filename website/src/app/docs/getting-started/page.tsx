@@ -25,8 +25,8 @@ export default function GettingStarted() {
       <Section title="Prerequisites">
         <ul className="list-disc list-inside text-[var(--color-text-secondary)] space-y-1.5">
           <li>
-            <strong className="text-[var(--color-text)]">Go 1.22+</strong> for
-            installing from source
+            <strong className="text-[var(--color-text)]">Node.js 16+</strong> (for npm install) or{" "}
+            <strong className="text-[var(--color-text)]">Go 1.22+</strong> (for go install)
           </li>
           <li>
             Or download a{" "}
@@ -38,7 +38,10 @@ export default function GettingStarted() {
       </Section>
 
       <Section title="1. Install">
-        <CodeBlock title="Install via Go" language="bash">
+        <CodeBlock title="Install via npm" language="bash">
+          {`$ npm install -g xenvsync`}
+        </CodeBlock>
+        <CodeBlock title="Or via Go" language="bash">
           {`$ go install github.com/nasimstg/xenvsync@latest`}
         </CodeBlock>
         <p className="text-sm text-[var(--color-text-muted)] mt-2">

@@ -34,6 +34,12 @@
 ## Install
 
 ```bash
+# npm
+npm install -g xenvsync
+
+# or run without installing
+npx xenvsync
+
 # Go 1.22+
 go install github.com/nasimstg/xenvsync@latest
 ```
