@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://xenvsync.softexforge.io/sitemap.xml

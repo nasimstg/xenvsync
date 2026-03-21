@@ -1,0 +1,49 @@
+# Binaries
+xenvsync
+xenvsync.exe
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Build output
+/dist/
+/build/
+
+# Test
+*.test
+*.out
+coverage.out
+coverage.html
+
+# Go workspace
+go.work
+go.work.sum
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code
+.claude/
+
+# xenvsync runtime files — NEVER commit keys or plaintext env
+.xenvsync.key
+.env
+.env.local
+.env.*.local
+
+# Website
+website/node_modules/
+website/.next/
+website/out/
+website/next-env.d.ts
+website/.vercel/
+website/.env*.local
