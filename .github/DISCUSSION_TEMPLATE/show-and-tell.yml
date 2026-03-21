@@ -1,0 +1,20 @@
+title: "[Show]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Show off how you're using xenvsync — CI/CD pipelines, team workflows, integrations, or anything creative.
+
+  - type: textarea
+    id: showcase
+    attributes:
+      label: What did you build or set up?
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Share config snippets, screenshots, or workflow steps

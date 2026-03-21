@@ -1,0 +1,26 @@
+title: "[Idea]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Share an idea or suggestion for xenvsync. This is the place for open-ended discussion before it becomes a formal feature request.
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: What's your idea?
+      description: Describe what you'd like to see
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: How would this help your workflow?
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
