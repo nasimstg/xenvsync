@@ -153,6 +153,24 @@ const searchIndex: SearchEntry[] = [
       "status reports file presence last-modified timestamps and permissions. Warns about insecure key file permissions and suggests whether to push or pull.",
   },
   {
+    href: "/docs/commands#export",
+    title: "Command Reference",
+    section: "Docs",
+    heading: "export",
+    keywords: ["export", "json", "yaml", "shell", "tfvars", "dotenv", "format", "stdout", "kubernetes", "terraform"],
+    content:
+      "export decrypts vault and outputs to stdout in specified format. Supports dotenv json yaml shell and tfvars. Use eval $(xenvsync export --format=shell) to inject into current shell. Never writes to disk.",
+  },
+  {
+    href: "/docs/commands#completion",
+    title: "Command Reference",
+    section: "Docs",
+    heading: "completion",
+    keywords: ["completion", "bash", "zsh", "fish", "powershell", "tab", "autocomplete", "shell"],
+    content:
+      "completion generates shell completion scripts for bash zsh fish and powershell. Source the output in your shell profile for tab completion of commands and flags.",
+  },
+  {
     href: "/docs/commands#version",
     title: "Command Reference",
     section: "Docs",

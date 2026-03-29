@@ -3,7 +3,7 @@ import { Section, PageHeader, StaggerList, StaggerItem } from "@/components/Docs
 
 export const metadata = {
   title: "Command Reference - xenvsync",
-  description: "Complete reference for all xenvsync commands: init, push, pull, run, diff, status, and version with flags, aliases, and examples.",
+  description: "Complete reference for all xenvsync commands: init, push, pull, run, diff, status, export, completion, and version with flags, aliases, and examples.",
   openGraph: {
     title: "Command Reference - xenvsync",
     description: "All xenvsync commands, flags, aliases, and usage examples.",
@@ -114,14 +114,53 @@ xenvsync status
   .env is newer than vault → consider running: xenvsync push`,
   },
   {
+    name: "export",
+    description:
+      "Decrypts the vault and writes variables to stdout in the specified format. Output is always written to stdout (never to disk) to preserve the security model.",
+    usage: "xenvsync export [flags]",
+    flags: [
+      { flag: "--format, -f", description: "Output format: dotenv, json, yaml, shell, tfvars (default: dotenv)" },
+      { flag: "--vault, -v", description: "Path to the vault file (default: .env.vault)" },
+    ],
+    example: `# Export as JSON
+$ xenvsync export --format=json
+{
+  "DB_HOST": "localhost",
+  "API_KEY": "sk-secret"
+}
+
+# Inject into current shell
+$ eval $(xenvsync export --format=shell)
+
+# Pipe to other tools
+$ xenvsync export -f yaml | kubectl create configmap`,
+  },
+  {
+    name: "completion",
+    description:
+      "Generates shell completion scripts for bash, zsh, fish, or powershell. Source the output in your shell profile for tab completion of commands and flags.",
+    usage: "xenvsync completion [bash|zsh|fish|powershell]",
+    example: `# Bash (add to ~/.bashrc)
+$ source <(xenvsync completion bash)
+
+# Zsh (add to ~/.zshrc)
+$ source <(xenvsync completion zsh)
+
+# Fish
+$ xenvsync completion fish > ~/.config/fish/completions/xenvsync.fish
+
+# PowerShell
+$ xenvsync completion powershell | Out-String | Invoke-Expression`,
+  },
+  {
     name: "version",
     description:
       "Prints the version, commit hash, and build date. Build info is injected at compile time via ldflags.",
     usage: "xenvsync version",
     example: `$ xenvsync version
-xenvsync v0.1.0
+xenvsync v1.1.0
   commit: abc1234
-  built:  2026-03-21T00:00:00Z`,
+  built:  2026-03-29T00:00:00Z`,
   },
 ];
 
