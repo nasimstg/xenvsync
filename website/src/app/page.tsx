@@ -94,10 +94,10 @@ export default function Home() {
           <AnimateOnScroll delay={0.4}>
             <div className="mt-8 max-w-md mx-auto">
               <CodeBlock>
-                {`$ npm install -g xenvsync`}
+                {`$ npm install -g @nasimstg/xenvsync`}
               </CodeBlock>
               <p className="text-xs text-[var(--color-text-muted)] mt-2">
-                or <code>npx xenvsync</code> · <code>go install github.com/nasimstg/xenvsync@latest</code>
+                or <code>npx @nasimstg/xenvsync</code> · <code>go install github.com/nasimstg/xenvsync@latest</code>
               </p>
             </div>
           </AnimateOnScroll>

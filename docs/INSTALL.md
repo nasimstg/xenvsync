@@ -4,10 +4,10 @@
 
 ```bash
 # Install globally
-npm install -g xenvsync
+npm install -g @nasimstg/xenvsync
 
 # Or run without installing
-npx xenvsync
+npx @nasimstg/xenvsync
 ```
 
 ## From Binary Releases (Recommended)

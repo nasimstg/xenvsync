@@ -39,7 +39,7 @@ export default function GettingStarted() {
 
       <Section title="1. Install">
         <CodeBlock title="Install via npm" language="bash">
-          {`$ npm install -g xenvsync`}
+          {`$ npm install -g @nasimstg/xenvsync`}
         </CodeBlock>
         <CodeBlock title="Or via Go" language="bash">
           {`$ go install github.com/nasimstg/xenvsync@latest`}

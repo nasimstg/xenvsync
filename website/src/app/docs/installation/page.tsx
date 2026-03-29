@@ -22,10 +22,10 @@ export default function Installation() {
 
       <Section title="npm (Quickest)">
         <CodeBlock title="Install globally" language="bash">
-          {`$ npm install -g xenvsync`}
+          {`$ npm install -g @nasimstg/xenvsync`}
         </CodeBlock>
         <p className="text-sm text-[var(--color-text-muted)] mt-2">
-          Or run without installing: <code>npx xenvsync</code>
+          Or run without installing: <code>npx @nasimstg/xenvsync</code>
         </p>
         <p className="text-sm text-[var(--color-text-muted)] mt-1">
           The npm package automatically downloads the correct binary for your platform.

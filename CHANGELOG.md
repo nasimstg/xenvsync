@@ -19,7 +19,7 @@ All notable changes to this project will be documented in this file.
 - `xenvsync diff` — preview changes between `.env` and vault
 - `xenvsync status` — show sync state of xenvsync files
 - Cross-platform builds via GoReleaser (Linux, macOS, Windows)
-- npm package wrapper for `npm install -g xenvsync`
+- npm package wrapper for `npm install -g @nasimstg/xenvsync`
 - CI pipeline with test matrix, linting, and automated releases
 
 [v1.1.0]: https://github.com/nasimstg/xenvsync/compare/v1.0.0...v1.1.0

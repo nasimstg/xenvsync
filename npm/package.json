@@ -1,5 +1,5 @@
 {
-  "name": "xenvsync",
+  "name": "@nasimstg/xenvsync",
   "version": "1.0.0",
   "description": "Encrypt, commit, and inject .env secrets with AES-256-GCM. No cloud required.",
   "homepage": "https://xenvsync.softexforge.io",
