@@ -1,0 +1,58 @@
+# GitLab CI example for xenvsync.
+#
+# Setup:
+#   1. In GitLab → Settings → CI/CD → Variables, add XENVSYNC_KEY (masked, protected).
+#   2. Commit your .env.vault to the repository.
+#   3. Add this to your .gitlab-ci.yml.
+
+stages:
+  - build
+  - deploy
+
+.decrypt-secrets: &decrypt-secrets
+  before_script:
+    - |
+      # Install xenvsync
+      curl -fsSL "https://github.com/nasimstg/xenvsync/releases/latest/download/xenvsync_$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | grep -o '"tag_name":"[^"]*' | cut -d'"' -f4 | sed 's/v//')_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+    - |
+      # Write key and decrypt
+      echo "$XENVSYNC_KEY" > .xenvsync.key
+      chmod 600 .xenvsync.key
+      xenvsync pull
+      rm .xenvsync.key
+
+build:
+  stage: build
+  image: node:20-alpine
+  <<: *decrypt-secrets
+  script:
+    - npm ci
+    - npm run build
+
+deploy-staging:
+  stage: deploy
+  image: alpine:3.20
+  variables:
+    XENVSYNC_ENV: staging
+  <<: *decrypt-secrets
+  script:
+    - xenvsync pull --env staging
+    - echo "Deploying with staging secrets..."
+  environment:
+    name: staging
+  only:
+    - develop
+
+deploy-production:
+  stage: deploy
+  image: alpine:3.20
+  variables:
+    XENVSYNC_ENV: production
+  <<: *decrypt-secrets
+  script:
+    - xenvsync pull --env production
+    - echo "Deploying with production secrets..."
+  environment:
+    name: production
+  only:
+    - main
