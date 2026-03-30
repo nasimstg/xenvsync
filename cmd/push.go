@@ -17,9 +17,10 @@ const (
 )
 
 var (
-	pushEnvFile   string
-	pushVaultFile string
-	pushEnvName   string
+	pushEnvFile    string
+	pushVaultFile  string
+	pushEnvName    string
+	pushNoFallback bool
 )
 
 var pushCmd = &cobra.Command{
@@ -31,7 +32,11 @@ AES-256-GCM with the local .xenvsync.key, and writes the ciphertext
 to .env.vault. The vault file is safe to commit to version control.
 
 Use --env to target a named environment:
-  xenvsync push --env staging    # .env.staging → .env.staging.vault`,
+  xenvsync push --env staging    # .env.staging → .env.staging.vault
+
+When .env.shared or .env.local files exist, variables are merged with
+precedence: .env.shared < .env.<name> < .env.local. Use --no-fallback
+to disable merging and encrypt only the primary file.`,
 	RunE: runPush,
 }
 
@@ -39,15 +44,13 @@ func init() {
 	pushCmd.Flags().StringVarP(&pushEnvFile, "file", "e", defaultEnvFile, "path to the .env file")
 	pushCmd.Flags().StringVarP(&pushVaultFile, "out", "o", defaultVaultFile, "path to the output vault file")
 	pushCmd.Flags().StringVar(&pushEnvName, "env", "", "environment name (e.g., staging, production)")
+	pushCmd.Flags().BoolVar(&pushNoFallback, "no-fallback", false, "disable .env.shared and .env.local merging")
 	rootCmd.AddCommand(pushCmd)
 }
 
 func runPush(cmd *cobra.Command, args []string) error {
-	// Resolve environment name: --env flag > XENVSYNC_ENV env var.
 	envName := resolveEnvName(pushEnvName)
 
-	// If --env is set, derive paths from the environment name.
-	// Explicit -e / -o flags override the derived paths.
 	srcFile := pushEnvFile
 	dstFile := pushVaultFile
 	if envName != "" {
@@ -65,8 +68,8 @@ func runPush(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// 2. Parse the .env file into ordered key-value pairs.
-	pairs, err := env.ParseFile(srcFile)
+	// 2. Parse the .env file(s) with fallback merging.
+	pairs, err := loadMergedPairs(srcFile, pushNoFallback)
 	if err != nil {
 		return fmt.Errorf("failed to parse %s: %w", srcFile, err)
 	}

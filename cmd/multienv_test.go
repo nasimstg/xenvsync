@@ -10,6 +10,7 @@ func resetAllFlags() {
 	pushEnvFile = defaultEnvFile
 	pushVaultFile = defaultVaultFile
 	pushEnvName = ""
+	pushNoFallback = false
 	pullVaultFile = defaultVaultFile
 	pullEnvFile = defaultEnvFile
 	pullEnvName = ""
@@ -175,6 +176,163 @@ func TestResolveEnvName_FlagOverridesEnvVar(t *testing.T) {
 	if got := resolveEnvName(""); got != "from-env" {
 		t.Errorf("should fall back to XENVSYNC_ENV, got %q", got)
 	}
+}
+
+func TestPush_FallbackMerge(t *testing.T) {
+	testInDir(t, func(dir string) {
+		resetAllFlags()
+
+		rootCmd.SetArgs([]string{"init"})
+		if err := rootCmd.Execute(); err != nil {
+			t.Fatalf("init: %v", err)
+		}
+
+		// Create .env.shared (base), .env.staging (env-specific), .env.local (overrides)
+		if err := os.WriteFile(".env.shared", []byte("SHARED=base\nDB_HOST=shared-db\n"), 0644); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(".env.staging", []byte("DB_HOST=staging-db\nAPI_KEY=sk-staging\n"), 0644); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(".env.local", []byte("API_KEY=sk-local-override\nDEBUG=true\n"), 0644); err != nil {
+			t.Fatal(err)
+		}
+
+		// Push with --env staging (fallback enabled by default)
+		resetAllFlags()
+		rootCmd.SetArgs([]string{"push", "--env", "staging"})
+		if err := rootCmd.Execute(); err != nil {
+			t.Fatalf("push --env staging: %v", err)
+		}
+
+		// Pull and verify merged content
+		resetAllFlags()
+		rootCmd.SetArgs([]string{"pull", "--env", "staging"})
+		if err := rootCmd.Execute(); err != nil {
+			t.Fatalf("pull --env staging: %v", err)
+		}
+
+		restored, err := os.ReadFile(".env.staging")
+		if err != nil {
+			t.Fatal(err)
+		}
+		content := string(restored)
+
+		// .env.shared provides SHARED=base
+		if !strings.Contains(content, "SHARED=base") {
+			t.Fatal("missing SHARED from .env.shared")
+		}
+		// .env.staging overrides DB_HOST from .env.shared
+		if !strings.Contains(content, "DB_HOST=staging-db") {
+			t.Fatal("DB_HOST should be staging-db (from .env.staging, not shared)")
+		}
+		// .env.local overrides API_KEY from .env.staging
+		if !strings.Contains(content, "API_KEY=sk-local-override") {
+			t.Fatal("API_KEY should be sk-local-override (from .env.local)")
+		}
+		// .env.local adds DEBUG
+		if !strings.Contains(content, "DEBUG=true") {
+			t.Fatal("missing DEBUG from .env.local")
+		}
+	})
+}
+
+func TestPush_NoFallback(t *testing.T) {
+	testInDir(t, func(dir string) {
+		resetAllFlags()
+
+		rootCmd.SetArgs([]string{"init"})
+		if err := rootCmd.Execute(); err != nil {
+			t.Fatalf("init: %v", err)
+		}
+
+		// Create fallback files that should be ignored
+		if err := os.WriteFile(".env.shared", []byte("SHARED=should-not-appear\n"), 0644); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(".env.staging", []byte("API_KEY=staging-only\n"), 0644); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(".env.local", []byte("LOCAL=should-not-appear\n"), 0644); err != nil {
+			t.Fatal(err)
+		}
+
+		// Push with --no-fallback
+		resetAllFlags()
+		rootCmd.SetArgs([]string{"push", "--env", "staging", "--no-fallback"})
+		if err := rootCmd.Execute(); err != nil {
+			t.Fatalf("push --no-fallback: %v", err)
+		}
+
+		// Pull and verify only .env.staging content
+		resetAllFlags()
+		rootCmd.SetArgs([]string{"pull", "--env", "staging"})
+		if err := rootCmd.Execute(); err != nil {
+			t.Fatalf("pull --env staging: %v", err)
+		}
+
+		restored, err := os.ReadFile(".env.staging")
+		if err != nil {
+			t.Fatal(err)
+		}
+		content := string(restored)
+
+		if !strings.Contains(content, "API_KEY=staging-only") {
+			t.Fatal("missing API_KEY from .env.staging")
+		}
+		if strings.Contains(content, "SHARED") {
+			t.Fatal("SHARED should not be present with --no-fallback")
+		}
+		if strings.Contains(content, "LOCAL") {
+			t.Fatal("LOCAL should not be present with --no-fallback")
+		}
+	})
+}
+
+func TestLoadMergedPairs_Precedence(t *testing.T) {
+	testInDir(t, func(dir string) {
+		// shared < primary < local
+		if err := os.WriteFile(".env.shared", []byte("A=shared\nB=shared\nC=shared\n"), 0644); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(".env", []byte("B=primary\nD=primary\n"), 0644); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(".env.local", []byte("C=local\nE=local\n"), 0644); err != nil {
+			t.Fatal(err)
+		}
+
+		pairs, err := loadMergedPairs(".env", false)
+		if err != nil {
+			t.Fatalf("loadMergedPairs: %v", err)
+		}
+
+		m := make(map[string]string)
+		for _, p := range pairs {
+			m[p.Key] = p.Value
+		}
+
+		// A from shared (not overridden)
+		if m["A"] != "shared" {
+			t.Errorf("A = %q, want shared", m["A"])
+		}
+		// B overridden by primary
+		if m["B"] != "primary" {
+			t.Errorf("B = %q, want primary", m["B"])
+		}
+		// C overridden by local
+		if m["C"] != "local" {
+			t.Errorf("C = %q, want local", m["C"])
+		}
+		// D from primary
+		if m["D"] != "primary" {
+			t.Errorf("D = %q, want primary", m["D"])
+		}
+		// E from local
+		if m["E"] != "local" {
+			t.Errorf("E = %q, want local", m["E"])
+		}
+	})
 }
 
 func TestSyncStatus(t *testing.T) {
