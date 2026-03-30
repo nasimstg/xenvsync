@@ -3,16 +3,23 @@ package cmd
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
 	"github.com/nasimstg/xenvsync/internal/crypto"
 )
 
-func TestKeygen_CreatesIdentity(t *testing.T) {
-	// Use a temp dir as HOME to avoid touching the real identity.
+func setTempHome(t *testing.T) string {
+	t.Helper()
 	tmpHome := t.TempDir()
 	t.Setenv("HOME", tmpHome)
+	t.Setenv("USERPROFILE", tmpHome) // Windows
+	return tmpHome
+}
+
+func TestKeygen_CreatesIdentity(t *testing.T) {
+	tmpHome := setTempHome(t)
 	keygenForce = false
 
 	rootCmd.SetArgs([]string{"keygen"})
@@ -26,8 +33,10 @@ func TestKeygen_CreatesIdentity(t *testing.T) {
 		t.Fatalf("identity file not created: %v", err)
 	}
 
-	if perm := info.Mode().Perm(); perm != 0600 {
-		t.Fatalf("identity perm = %o, want 0600", perm)
+	if runtime.GOOS != "windows" {
+		if perm := info.Mode().Perm(); perm != 0600 {
+			t.Fatalf("identity perm = %o, want 0600", perm)
+		}
 	}
 
 	// Should be a valid private key.
@@ -39,8 +48,7 @@ func TestKeygen_CreatesIdentity(t *testing.T) {
 }
 
 func TestKeygen_RefusesOverwrite(t *testing.T) {
-	tmpHome := t.TempDir()
-	t.Setenv("HOME", tmpHome)
+	tmpHome := setTempHome(t)
 	keygenForce = false
 
 	idDir := filepath.Join(tmpHome, ".xenvsync")
@@ -59,8 +67,7 @@ func TestKeygen_RefusesOverwrite(t *testing.T) {
 }
 
 func TestKeygen_ForceOverwrite(t *testing.T) {
-	tmpHome := t.TempDir()
-	t.Setenv("HOME", tmpHome)
+	tmpHome := setTempHome(t)
 	keygenForce = false
 
 	idDir := filepath.Join(tmpHome, ".xenvsync")
@@ -83,8 +90,7 @@ func TestKeygen_ForceOverwrite(t *testing.T) {
 }
 
 func TestWhoami_ShowsPublicKey(t *testing.T) {
-	tmpHome := t.TempDir()
-	t.Setenv("HOME", tmpHome)
+	_ = setTempHome(t)
 	keygenForce = false
 
 	// Generate first.
@@ -101,8 +107,7 @@ func TestWhoami_ShowsPublicKey(t *testing.T) {
 }
 
 func TestWhoami_NoIdentity(t *testing.T) {
-	tmpHome := t.TempDir()
-	t.Setenv("HOME", tmpHome)
+	_ = setTempHome(t)
 
 	rootCmd.SetArgs([]string{"whoami"})
 	err := rootCmd.Execute()
