@@ -190,6 +190,9 @@ xenvsync/
 │   ├── crypto/                    # AES-256-GCM + X25519 key exchange
 │   ├── env/                       # .env parser (multiline, quotes, export)
 │   └── vault/                     # vault file format
+├── examples/
+│   ├── docker/                    # Dockerfile, compose, entrypoint
+│   └── ci/                        # GitHub Actions, GitLab, CircleCI, Bitbucket
 ├── Makefile                       # build, test, lint, install
 ├── .goreleaser.yml                # cross-platform release builds
 └── .github/workflows/ci.yml       # CI: test matrix, lint, release

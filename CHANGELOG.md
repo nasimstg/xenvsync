@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.5.0] - 2026-03-30
+
+### Added
+- Docker integration: Alpine Dockerfile, multi-stage app example, docker-compose, and entrypoint script (#8)
+- CI provider templates: GitHub Actions, GitLab CI, CircleCI, and Bitbucket Pipelines (#10)
+- All examples in `examples/docker/` and `examples/ci/`
+
 ## [v1.4.0] - 2026-03-30
 
 ### Added
@@ -58,6 +65,7 @@ All notable changes to this project will be documented in this file.
 - npm package wrapper for `npm install -g @nasimstg/xenvsync`
 - CI pipeline with test matrix, linting, and automated releases
 
+[v1.5.0]: https://github.com/nasimstg/xenvsync/compare/v1.4.0...v1.5.0
 [v1.4.0]: https://github.com/nasimstg/xenvsync/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/nasimstg/xenvsync/compare/v1.2.0...v1.3.0
 [v1.2.0]: https://github.com/nasimstg/xenvsync/compare/v1.1.1...v1.2.0
