@@ -67,7 +67,7 @@ async function extractTarGz(stream, destDir) {
   });
 
   try {
-    execSync(`tar xzf "${tmpFile}" --strip-components=1 -C "${destDir}"`, {
+    execSync(`tar xzf "${tmpFile}" -C "${destDir}"`, {
       stdio: "ignore",
     });
   } finally {
