@@ -6,6 +6,7 @@ import (
 
 	"github.com/nasimstg/xenvsync/internal/crypto"
 	"github.com/nasimstg/xenvsync/internal/env"
+	"github.com/nasimstg/xenvsync/internal/team"
 	"github.com/nasimstg/xenvsync/internal/vault"
 
 	"github.com/spf13/cobra"
@@ -62,13 +63,7 @@ func runPush(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	// 1. Load the encryption key (validates permissions).
-	key, err := loadKey()
-	if err != nil {
-		return err
-	}
-
-	// 2. Parse the .env file(s) with fallback merging.
+	// 1. Parse the .env file(s) with fallback merging.
 	pairs, err := loadMergedPairs(srcFile, pushNoFallback)
 	if err != nil {
 		return fmt.Errorf("failed to parse %s: %w", srcFile, err)
@@ -77,19 +72,39 @@ func runPush(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("%s is empty or contains no variables", srcFile)
 	}
 
-	// 3. Serialize pairs, then encrypt.
+	// 2. Serialize pairs.
 	plaintext := env.Marshal(pairs)
-	ciphertext, err := crypto.Encrypt(key, plaintext)
+
+	// 3. Check for team roster — use V2 multi-key encryption if present.
+	roster, err := team.Load(team.RosterFile)
 	if err != nil {
-		return fmt.Errorf("encryption failed: %w", err)
+		return err
+	}
+
+	var vaultData []byte
+	if len(roster.Members) > 0 {
+		vaultData, err = encryptForTeam(roster, plaintext)
+		if err != nil {
+			return err
+		}
+		fmt.Printf("Encrypted %d variable(s) → %s (V2, %d recipient(s))\n", len(pairs), dstFile, len(roster.Members))
+	} else {
+		// V1: use symmetric key.
+		key, err := loadKey()
+		if err != nil {
+			return err
+		}
+		ciphertext, err := crypto.Encrypt(key, plaintext)
+		if err != nil {
+			return fmt.Errorf("encryption failed: %w", err)
+		}
+		vaultData = vault.Encode(ciphertext)
+		fmt.Printf("Encrypted %d variable(s) → %s\n", len(pairs), dstFile)
 	}
 
 	// 4. Write the vault file.
-	vaultData := vault.Encode(ciphertext)
 	if err := os.WriteFile(dstFile, vaultData, 0644); err != nil {
 		return fmt.Errorf("failed to write %s: %w", dstFile, err)
 	}
-
-	fmt.Printf("Encrypted %d variable(s) → %s\n", len(pairs), dstFile)
 	return nil
 }

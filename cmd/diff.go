@@ -2,12 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"sort"
 
-	"github.com/nasimstg/xenvsync/internal/crypto"
 	"github.com/nasimstg/xenvsync/internal/env"
-	"github.com/nasimstg/xenvsync/internal/vault"
 
 	"github.com/spf13/cobra"
 )
@@ -51,36 +48,18 @@ func runDiff(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	// Load key (validates permissions).
-	key, err := loadKey()
-	if err != nil {
-		return err
-	}
-
 	// Parse current .env (may not exist).
 	envPairs, envErr := env.ParseFile(eFile)
 	envMap := pairsToMap(envPairs)
 
 	// Decrypt vault (may not exist).
 	var vaultMap map[string]string
-	vaultRaw, vaultReadErr := os.ReadFile(vFile)
-	if vaultReadErr == nil {
-		ciphertext, err := vault.Decode(vaultRaw)
-		if err != nil {
-			return fmt.Errorf("invalid vault format: %w", err)
-		}
-		plaintext, err := crypto.Decrypt(key, ciphertext)
-		if err != nil {
-			return fmt.Errorf("decryption failed: %w", err)
-		}
-		vaultPairs, err := env.Parse(plaintext)
-		if err != nil {
-			return fmt.Errorf("corrupt vault payload: %w", err)
-		}
+	vaultPairs, vaultErr := decryptVaultPairs(vFile)
+	if vaultErr == nil {
 		vaultMap = pairsToMap(vaultPairs)
 	}
 
-	if envErr != nil && vaultReadErr != nil {
+	if envErr != nil && vaultErr != nil {
 		return fmt.Errorf("neither %s nor %s found", eFile, vFile)
 	}
 
