@@ -99,6 +99,9 @@ xenvsync run -- npm start        # inject secrets into process (in-memory, no .e
 | `xenvsync status [--env NAME]` | Show file presence, timestamps, and sync direction |
 | `xenvsync keygen [--force]` | Generate an X25519 keypair for team vault encryption |
 | `xenvsync whoami` | Display your public key and identity path |
+| `xenvsync team add <name> <key>` | Register a team member's public key |
+| `xenvsync team remove <name>` | Remove a team member from the roster |
+| `xenvsync team list` | List all team members and their public keys |
 | `xenvsync envs` | List all discovered environments and their sync status |
 | `xenvsync export [--format FMT]` | Decrypt vault and output as JSON, YAML, shell, tfvars, or dotenv |
 | `xenvsync completion [SHELL]` | Generate shell completions (bash/zsh/fish/powershell) |
@@ -131,6 +134,31 @@ When pushing, xenvsync automatically merges variables from fallback files if the
 ```
 
 Use `--no-fallback` to disable merging and encrypt only the primary file.
+
+## Team Sharing (V2 Vault)
+
+With V2, each team member has their own X25519 keypair. Vaults are encrypted per-member — no shared symmetric key needed.
+
+```bash
+# Each member generates their identity (once)
+xenvsync keygen
+
+# Share your public key with the team
+xenvsync whoami
+
+# Add team members to the project roster
+xenvsync team add alice <alice-public-key>
+xenvsync team add bob <bob-public-key>
+xenvsync team list
+
+# Push now auto-encrypts for all team members (V2 format)
+xenvsync push    # creates V2 vault with per-member key slots
+
+# Each member decrypts with their own private key
+xenvsync pull    # uses ~/.xenvsync/identity automatically
+```
+
+V1 vaults (created without a team roster) are still fully readable.
 
 ## Security Model
 

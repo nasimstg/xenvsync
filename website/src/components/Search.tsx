@@ -180,6 +180,15 @@ const searchIndex: SearchEntry[] = [
       "export decrypts vault and outputs to stdout in specified format. Supports dotenv json yaml shell and tfvars. Use eval $(xenvsync export --format=shell) to inject into current shell. Never writes to disk.",
   },
   {
+    href: "/docs/commands#team%20add",
+    title: "Command Reference",
+    section: "Docs",
+    heading: "team add/remove/list",
+    keywords: ["team", "add", "remove", "list", "roster", "public key", "member", "x25519", "sharing"],
+    content:
+      "team add registers a member's X25519 public key in .xenvsync-team.json. team remove revokes access. team list displays the roster. When roster exists push auto-encrypts for all members using V2 vault format.",
+  },
+  {
     href: "/docs/commands#keygen",
     title: "Command Reference",
     section: "Docs",

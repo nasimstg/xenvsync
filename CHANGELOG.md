@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.4.0] - 2026-03-30
+
+### Added
+- `xenvsync team add/remove/list` commands — manage team members' X25519 public keys (#5)
+- Team roster stored in `.xenvsync-team.json` (project-local, committed to repo)
+- V2 vault format with per-member key slots using X25519 ECDH (#6)
+- Each team member can decrypt vaults using their own private key
+- Automatic V2 encryption when a team roster exists
+- V1 vault backward compatibility — existing vaults remain readable
+- Shared `decryptVault()` helper auto-detects V1/V2 format across all commands
+
 ## [v1.3.0] - 2026-03-30
 
 ### Added
@@ -47,6 +58,7 @@ All notable changes to this project will be documented in this file.
 - npm package wrapper for `npm install -g @nasimstg/xenvsync`
 - CI pipeline with test matrix, linting, and automated releases
 
+[v1.4.0]: https://github.com/nasimstg/xenvsync/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/nasimstg/xenvsync/compare/v1.2.0...v1.3.0
 [v1.2.0]: https://github.com/nasimstg/xenvsync/compare/v1.1.1...v1.2.0
 [v1.1.1]: https://github.com/nasimstg/xenvsync/compare/v1.1.0...v1.1.1

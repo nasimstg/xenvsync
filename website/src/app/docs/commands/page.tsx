@@ -168,6 +168,37 @@ $ eval $(xenvsync export --format=shell)
 $ xenvsync export -f yaml | kubectl create configmap`,
   },
   {
+    name: "team add",
+    description:
+      "Registers a team member by name and their X25519 public key (base64-encoded, as shown by 'xenvsync whoami'). The roster is stored in .xenvsync-team.json and should be committed to version control.",
+    usage: "xenvsync team add <name> <public-key>",
+    example: `$ xenvsync team add alice dGhpcyBpcyBhIGJhc2U2NCBwdWJsaWMga2V5...
+Added alice to team roster (.xenvsync-team.json)
+  Public key: dGhpcyBpcyBhIGJhc2U2NCBwdWJsaWMga2V5...
+
+Roster now has 2 member(s).`,
+  },
+  {
+    name: "team remove",
+    description:
+      "Removes a team member from the project roster by name, revoking their ability to decrypt future vaults.",
+    usage: "xenvsync team remove <name>",
+    example: `$ xenvsync team remove alice
+Removed alice from team roster
+Roster now has 1 member(s).`,
+  },
+  {
+    name: "team list",
+    description:
+      "Displays all team members in the project roster with their public keys and the date they were added.",
+    usage: "xenvsync team list",
+    example: `$ xenvsync team list
+Team roster (2 member(s)):
+  NAME     PUBLIC KEY                                    ADDED
+  alice    dGhpcyBpcyBhIGJhc2U2NCBwdWJsaWMga2V5...      2026-03-30
+  bob      Ym9iJ3MgcHVibGljIGtleQ==...                   2026-03-30`,
+  },
+  {
     name: "keygen",
     description:
       "Generates an X25519 keypair and stores the private key in ~/.xenvsync/identity with restricted permissions (0600). The public key is printed to stdout for sharing with teammates. This identity is user-global (not per-project).",
