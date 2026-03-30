@@ -1,0 +1,67 @@
+# CircleCI example for xenvsync.
+#
+# Setup:
+#   1. In CircleCI → Project Settings → Environment Variables, add XENVSYNC_KEY.
+#   2. Commit your .env.vault to the repository.
+
+version: 2.1
+
+commands:
+  install-xenvsync:
+    steps:
+      - run:
+          name: Install xenvsync
+          command: |
+            LATEST=$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | grep -o '"tag_name":"[^"]*' | cut -d'"' -f4)
+            VERSION=${LATEST#v}
+            curl -fsSL "https://github.com/nasimstg/xenvsync/releases/download/${LATEST}/xenvsync_${VERSION}_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+
+  decrypt-vault:
+    parameters:
+      env:
+        type: string
+        default: ""
+    steps:
+      - run:
+          name: Decrypt vault
+          command: |
+            echo "$XENVSYNC_KEY" > .xenvsync.key
+            chmod 600 .xenvsync.key
+            if [ -n "<< parameters.env >>" ]; then
+              xenvsync pull --env "<< parameters.env >>"
+            else
+              xenvsync pull
+            fi
+            rm .xenvsync.key
+
+jobs:
+  build:
+    docker:
+      - image: cimg/node:20.0
+    steps:
+      - checkout
+      - install-xenvsync
+      - decrypt-vault
+      - run: npm ci
+      - run: npm run build
+
+  deploy-staging:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout
+      - install-xenvsync
+      - decrypt-vault:
+          env: staging
+      - run: echo "Deploying with staging secrets..."
+
+workflows:
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy-staging:
+          requires:
+            - build
+          filters:
+            branches:
+              only: develop

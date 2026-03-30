@@ -1,0 +1,87 @@
+# GitHub Actions example for xenvsync.
+#
+# Setup:
+#   1. In GitHub → Settings → Secrets → Actions, add XENVSYNC_KEY.
+#   2. Commit your .env.vault to the repository.
+
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install xenvsync
+        run: |
+          LATEST=$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | jq -r .tag_name)
+          VERSION=${LATEST#v}
+          curl -fsSL "https://github.com/nasimstg/xenvsync/releases/download/${LATEST}/xenvsync_${VERSION}_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+
+      - name: Decrypt secrets
+        env:
+          XENVSYNC_KEY: ${{ secrets.XENVSYNC_KEY }}
+        run: |
+          echo "$XENVSYNC_KEY" > .xenvsync.key
+          chmod 600 .xenvsync.key
+          xenvsync pull
+          rm .xenvsync.key
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+
+  deploy-staging:
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install xenvsync
+        run: |
+          LATEST=$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | jq -r .tag_name)
+          VERSION=${LATEST#v}
+          curl -fsSL "https://github.com/nasimstg/xenvsync/releases/download/${LATEST}/xenvsync_${VERSION}_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+
+      - name: Decrypt staging secrets
+        env:
+          XENVSYNC_KEY: ${{ secrets.XENVSYNC_KEY }}
+        run: |
+          echo "$XENVSYNC_KEY" > .xenvsync.key
+          chmod 600 .xenvsync.key
+          xenvsync pull --env staging
+          rm .xenvsync.key
+
+      - name: Deploy
+        run: echo "Deploying with staging secrets..."
+
+  # Alternative: use xenvsync run for in-memory injection (no .env written to disk)
+  deploy-production:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install xenvsync
+        run: |
+          LATEST=$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | jq -r .tag_name)
+          VERSION=${LATEST#v}
+          curl -fsSL "https://github.com/nasimstg/xenvsync/releases/download/${LATEST}/xenvsync_${VERSION}_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+
+      - name: Deploy with in-memory secrets
+        env:
+          XENVSYNC_KEY: ${{ secrets.XENVSYNC_KEY }}
+        run: |
+          echo "$XENVSYNC_KEY" > .xenvsync.key
+          chmod 600 .xenvsync.key
+          xenvsync run --env production -- ./deploy.sh
+          rm .xenvsync.key
