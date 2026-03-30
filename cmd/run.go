@@ -7,9 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/nasimstg/xenvsync/internal/crypto"
 	"github.com/nasimstg/xenvsync/internal/env"
-	"github.com/nasimstg/xenvsync/internal/vault"
 
 	"github.com/spf13/cobra"
 )
@@ -56,27 +54,13 @@ func runRun(cmd *cobra.Command, args []string) error {
 		vFile = vaultFilePath(envName)
 	}
 
-	// 1. Load and decode the key (validates permissions).
-	key, err := loadKey()
+	// 1. Decrypt the vault (handles V1 and V2 automatically).
+	plaintext, err := decryptVault(vFile)
 	if err != nil {
 		return err
 	}
 
-	// 2. Read and decrypt the vault (in-memory only).
-	vaultRaw, err := os.ReadFile(vFile)
-	if err != nil {
-		return fmt.Errorf("cannot read %s: %w", vFile, err)
-	}
-	ciphertext, err := vault.Decode(vaultRaw)
-	if err != nil {
-		return fmt.Errorf("invalid vault format: %w", err)
-	}
-	plaintext, err := crypto.Decrypt(key, ciphertext)
-	if err != nil {
-		return fmt.Errorf("decryption failed: %w", err)
-	}
-
-	// 3. Parse decrypted vars.
+	// 2. Parse decrypted vars.
 	pairs, err := env.Parse(plaintext)
 	if err != nil {
 		return fmt.Errorf("corrupt vault payload: %w", err)

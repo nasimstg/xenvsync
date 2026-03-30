@@ -6,9 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nasimstg/xenvsync/internal/crypto"
 	"github.com/nasimstg/xenvsync/internal/env"
-	"github.com/nasimstg/xenvsync/internal/vault"
 
 	"github.com/spf13/cobra"
 )
@@ -55,29 +53,9 @@ func runExport(cmd *cobra.Command, args []string) error {
 		vFile = vaultFilePath(envName)
 	}
 
-	key, err := loadKey()
+	pairs, err := decryptVaultPairs(vFile)
 	if err != nil {
 		return err
-	}
-
-	vaultRaw, err := os.ReadFile(vFile)
-	if err != nil {
-		return fmt.Errorf("cannot read %s: %w", vFile, err)
-	}
-
-	ciphertext, err := vault.Decode(vaultRaw)
-	if err != nil {
-		return fmt.Errorf("invalid vault format in %s: %w", vFile, err)
-	}
-
-	plaintext, err := crypto.Decrypt(key, ciphertext)
-	if err != nil {
-		return fmt.Errorf("decryption failed (wrong key?): %w", err)
-	}
-
-	pairs, err := env.Parse(plaintext)
-	if err != nil {
-		return fmt.Errorf("corrupt decrypted payload: %w", err)
 	}
 
 	switch exportFormat {
