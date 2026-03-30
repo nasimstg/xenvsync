@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.1.1] - 2026-03-30
+
+### Fixed
+- npm postinstall failing with ENOENT — tar extraction used `--strip-components=1` but GoReleaser archives have no wrapper directory
+
 ## [v1.1.0] - 2026-03-29
 
 ### Added
@@ -22,5 +27,6 @@ All notable changes to this project will be documented in this file.
 - npm package wrapper for `npm install -g @nasimstg/xenvsync`
 - CI pipeline with test matrix, linting, and automated releases
 
+[v1.1.1]: https://github.com/nasimstg/xenvsync/compare/v1.1.0...v1.1.1
 [v1.1.0]: https://github.com/nasimstg/xenvsync/compare/v1.0.0...v1.1.0
 [v1.0.0]: https://github.com/nasimstg/xenvsync/releases/tag/v1.0.0
