@@ -3,6 +3,8 @@ package cmd
 import (
 	"os"
 	"strings"
+
+	"github.com/nasimstg/xenvsync/internal/env"
 )
 
 // envFilePath returns the .env file path for a given environment name.
@@ -130,6 +132,67 @@ func getOrCreate(m map[string]*EnvInfo, name string) *EnvInfo {
 	info := &EnvInfo{Name: name}
 	m[name] = info
 	return info
+}
+
+const (
+	sharedEnvFile = ".env.shared"
+	localEnvFile  = ".env.local"
+)
+
+// loadMergedPairs loads and merges environment variables with fallback precedence:
+// .env.shared < .env.<name> < .env.local
+// If noFallback is true, only .env.<name> (or the primary file) is loaded.
+func loadMergedPairs(primaryFile string, noFallback bool) ([]env.Pair, error) {
+	if noFallback {
+		pairs, err := env.ParseFile(primaryFile)
+		if err != nil {
+			return nil, err
+		}
+		return pairs, nil
+	}
+
+	merged := make(map[string]string)
+	var orderedKeys []string
+
+	// Layer 1: .env.shared (lowest priority)
+	if sharedPairs, err := env.ParseFile(sharedEnvFile); err == nil {
+		for _, p := range sharedPairs {
+			merged[p.Key] = p.Value
+			orderedKeys = append(orderedKeys, p.Key)
+		}
+	}
+
+	// Layer 2: primary file (.env or .env.<name>)
+	primaryPairs, err := env.ParseFile(primaryFile)
+	if err != nil {
+		return nil, err
+	}
+	for _, p := range primaryPairs {
+		if _, exists := merged[p.Key]; !exists {
+			orderedKeys = append(orderedKeys, p.Key)
+		}
+		merged[p.Key] = p.Value
+	}
+
+	// Layer 3: .env.local (highest priority)
+	if localPairs, err := env.ParseFile(localEnvFile); err == nil {
+		for _, p := range localPairs {
+			if _, exists := merged[p.Key]; !exists {
+				orderedKeys = append(orderedKeys, p.Key)
+			}
+			merged[p.Key] = p.Value
+		}
+	}
+
+	// Build result preserving key order
+	result := make([]env.Pair, 0, len(merged))
+	for _, k := range orderedKeys {
+		if v, ok := merged[k]; ok {
+			result = append(result, env.Pair{Key: k, Value: v})
+			delete(merged, k) // prevent duplicates from orderedKeys
+		}
+	}
+	return result, nil
 }
 
 func sortStrings(s []string) {
