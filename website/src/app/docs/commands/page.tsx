@@ -168,6 +168,34 @@ $ eval $(xenvsync export --format=shell)
 $ xenvsync export -f yaml | kubectl create configmap`,
   },
   {
+    name: "keygen",
+    description:
+      "Generates an X25519 keypair and stores the private key in ~/.xenvsync/identity with restricted permissions (0600). The public key is printed to stdout for sharing with teammates. This identity is user-global (not per-project).",
+    usage: "xenvsync keygen [flags]",
+    flags: [
+      { flag: "--force, -f", description: "Overwrite existing identity (regenerate keypair)" },
+    ],
+    example: `$ xenvsync keygen
+Generated X25519 identity → /home/you/.xenvsync/identity (mode 0600)
+
+Your public key:
+  dGhpcyBpcyBhIGJhc2U2NCBwdWJsaWMga2V5...
+
+Share this public key with your team to be added to project vaults.
+
+# Regenerate identity
+$ xenvsync keygen --force`,
+  },
+  {
+    name: "whoami",
+    description:
+      "Reads your X25519 private key from ~/.xenvsync/identity, derives the public key, and prints it in a copy-paste-friendly format.",
+    usage: "xenvsync whoami",
+    example: `$ xenvsync whoami
+Identity:   /home/you/.xenvsync/identity
+Public key: dGhpcyBpcyBhIGJhc2U2NCBwdWJsaWMga2V5...`,
+  },
+  {
     name: "completion",
     description:
       "Generates shell completion scripts for bash, zsh, fish, or powershell. Source the output in your shell profile for tab completion of commands and flags.",

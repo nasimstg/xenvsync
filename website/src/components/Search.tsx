@@ -180,6 +180,24 @@ const searchIndex: SearchEntry[] = [
       "export decrypts vault and outputs to stdout in specified format. Supports dotenv json yaml shell and tfvars. Use eval $(xenvsync export --format=shell) to inject into current shell. Never writes to disk.",
   },
   {
+    href: "/docs/commands#keygen",
+    title: "Command Reference",
+    section: "Docs",
+    heading: "keygen",
+    keywords: ["keygen", "keypair", "x25519", "identity", "public key", "private key", "generate", "force"],
+    content:
+      "keygen generates an X25519 keypair and stores the private key at ~/.xenvsync/identity with 0600 permissions. Public key is printed for sharing with teammates. Use --force to overwrite existing identity.",
+  },
+  {
+    href: "/docs/commands#whoami",
+    title: "Command Reference",
+    section: "Docs",
+    heading: "whoami",
+    keywords: ["whoami", "identity", "public key", "x25519", "who am i"],
+    content:
+      "whoami reads your X25519 private key from ~/.xenvsync/identity derives the public key and prints it in a copy-paste-friendly format.",
+  },
+  {
     href: "/docs/commands#completion",
     title: "Command Reference",
     section: "Docs",

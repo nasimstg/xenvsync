@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.3.0] - 2026-03-30
+
+### Added
+- `xenvsync keygen` command — generate an X25519 keypair and store identity at `~/.xenvsync/identity` (#4)
+- `xenvsync whoami` command — display your public key and identity path
+- `--force` flag on keygen to overwrite existing identity
+- `internal/crypto` package with X25519 key generation, encoding, and decoding
+- Cross-platform identity support (Linux, macOS, Windows)
+
 ## [v1.2.0] - 2026-03-30
 
 ### Added
@@ -38,6 +47,7 @@ All notable changes to this project will be documented in this file.
 - npm package wrapper for `npm install -g @nasimstg/xenvsync`
 - CI pipeline with test matrix, linting, and automated releases
 
+[v1.3.0]: https://github.com/nasimstg/xenvsync/compare/v1.2.0...v1.3.0
 [v1.2.0]: https://github.com/nasimstg/xenvsync/compare/v1.1.1...v1.2.0
 [v1.1.1]: https://github.com/nasimstg/xenvsync/compare/v1.1.0...v1.1.1
 [v1.1.0]: https://github.com/nasimstg/xenvsync/compare/v1.0.0...v1.1.0

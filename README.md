@@ -97,6 +97,8 @@ xenvsync run -- npm start        # inject secrets into process (in-memory, no .e
 | `xenvsync run [--env NAME] -- <cmd>` | Decrypt in-memory and inject into a child process |
 | `xenvsync diff [--env NAME]` | Preview changes between `.env` and the vault |
 | `xenvsync status [--env NAME]` | Show file presence, timestamps, and sync direction |
+| `xenvsync keygen [--force]` | Generate an X25519 keypair for team vault encryption |
+| `xenvsync whoami` | Display your public key and identity path |
 | `xenvsync envs` | List all discovered environments and their sync status |
 | `xenvsync export [--format FMT]` | Decrypt vault and output as JSON, YAML, shell, tfvars, or dotenv |
 | `xenvsync completion [SHELL]` | Generate shell completions (bash/zsh/fish/powershell) |
@@ -139,6 +141,7 @@ Use `--no-fallback` to disable merging and encrypt only the primary file.
 | Nonce | Fresh 12-byte random nonce per encryption — same plaintext always produces different ciphertext |
 | Vault layout | `[nonce ‖ ciphertext ‖ GCM tag]`, base64-wrapped with header/footer |
 | Key isolation | Never embedded in vault output. Auto-added to `.gitignore` on `init` |
+| Identity | X25519 keypair at `~/.xenvsync/identity` (mode 0600) for asymmetric team sharing |
 | Permission check | Warns at runtime if key file is readable by group/others |
 
 ## Project Structure
@@ -152,10 +155,11 @@ xenvsync/
 │   ├── push.go / pull.go          # encrypt / decrypt
 │   ├── run.go                     # in-memory injection
 │   ├── diff.go / status.go        # preview & sync state
+│   ├── keygen.go / whoami.go       # X25519 identity management
 │   ├── version.go                 # version info
 │   └── keyutil.go                 # shared key loading + permission check
 ├── internal/
-│   ├── crypto/                    # AES-256-GCM engine
+│   ├── crypto/                    # AES-256-GCM + X25519 key exchange
 │   ├── env/                       # .env parser (multiline, quotes, export)
 │   └── vault/                     # vault file format
 ├── Makefile                       # build, test, lint, install

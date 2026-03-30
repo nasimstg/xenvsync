@@ -90,8 +90,9 @@ export default function Security() {
             </div>
             <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
               In V1, the symmetric key must be shared out-of-band (secure
-              messaging, password manager, etc.). V2 will introduce asymmetric
-              cryptography for zero-trust team sharing.
+              messaging, password manager, etc.). V2 introduces X25519 asymmetric
+              keypairs (<code>keygen</code> / <code>whoami</code>) as the
+              foundation for zero-trust team sharing.
             </p>
           </Card>
         </div>
