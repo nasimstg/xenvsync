@@ -14,7 +14,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var runVaultFile string
+var (
+	runVaultFile string
+	runEnvName   string
+)
 
 var runCmd = &cobra.Command{
 	Use:   "run -- <command> [args...]",
@@ -23,6 +26,9 @@ var runCmd = &cobra.Command{
 decrypted variables merged into the current environment. The plaintext
 secrets never touch disk — they exist only in the child process's
 memory space.
+
+Use --env to target a named environment:
+  xenvsync run --env staging -- npm start
 
 Example:
   xenvsync run -- python app.py
@@ -33,6 +39,7 @@ Example:
 
 func init() {
 	runCmd.Flags().StringVarP(&runVaultFile, "vault", "v", defaultVaultFile, "path to the vault file")
+	runCmd.Flags().StringVar(&runEnvName, "env", "", "environment name (e.g., staging, production)")
 	rootCmd.AddCommand(runCmd)
 }
 
@@ -42,6 +49,13 @@ func runRun(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("no command specified — usage: xenvsync run -- <command> [args...]")
 	}
 
+	envName := resolveEnvName(runEnvName)
+
+	vFile := runVaultFile
+	if envName != "" && vFile == defaultVaultFile {
+		vFile = vaultFilePath(envName)
+	}
+
 	// 1. Load and decode the key (validates permissions).
 	key, err := loadKey()
 	if err != nil {
@@ -49,9 +63,9 @@ func runRun(cmd *cobra.Command, args []string) error {
 	}
 
 	// 2. Read and decrypt the vault (in-memory only).
-	vaultRaw, err := os.ReadFile(runVaultFile)
+	vaultRaw, err := os.ReadFile(vFile)
 	if err != nil {
-		return fmt.Errorf("cannot read %s: %w", runVaultFile, err)
+		return fmt.Errorf("cannot read %s: %w", vFile, err)
 	}
 	ciphertext, err := vault.Decode(vaultRaw)
 	if err != nil {

@@ -16,6 +16,7 @@ import (
 var (
 	exportVaultFile string
 	exportFormat    string
+	exportEnvName   string
 )
 
 var exportCmd = &cobra.Command{
@@ -42,23 +43,31 @@ Examples:
 func init() {
 	exportCmd.Flags().StringVarP(&exportVaultFile, "vault", "v", defaultVaultFile, "path to the vault file")
 	exportCmd.Flags().StringVarP(&exportFormat, "format", "f", "dotenv", "output format: dotenv, json, yaml, shell, tfvars")
+	exportCmd.Flags().StringVar(&exportEnvName, "env", "", "environment name (e.g., staging, production)")
 	rootCmd.AddCommand(exportCmd)
 }
 
 func runExport(cmd *cobra.Command, args []string) error {
+	envName := resolveEnvName(exportEnvName)
+
+	vFile := exportVaultFile
+	if envName != "" && vFile == defaultVaultFile {
+		vFile = vaultFilePath(envName)
+	}
+
 	key, err := loadKey()
 	if err != nil {
 		return err
 	}
 
-	vaultRaw, err := os.ReadFile(exportVaultFile)
+	vaultRaw, err := os.ReadFile(vFile)
 	if err != nil {
-		return fmt.Errorf("cannot read %s: %w", exportVaultFile, err)
+		return fmt.Errorf("cannot read %s: %w", vFile, err)
 	}
 
 	ciphertext, err := vault.Decode(vaultRaw)
 	if err != nil {
-		return fmt.Errorf("invalid vault format in %s: %w", exportVaultFile, err)
+		return fmt.Errorf("invalid vault format in %s: %w", vFile, err)
 	}
 
 	plaintext, err := crypto.Decrypt(key, ciphertext)

@@ -15,6 +15,7 @@ import (
 var (
 	diffEnvFile   string
 	diffVaultFile string
+	diffEnvName   string
 )
 
 var diffCmd = &cobra.Command{
@@ -22,17 +23,34 @@ var diffCmd = &cobra.Command{
 	Short: "Show differences between .env and .env.vault",
 	Long: `Decrypts the vault and compares its contents to the current .env file.
 Displays added, removed, and changed variables so you can preview
-what a push or pull would do.`,
+what a push or pull would do.
+
+Use --env to target a named environment:
+  xenvsync diff --env staging`,
 	RunE: runDiff,
 }
 
 func init() {
-	diffCmd.Flags().StringVarP(&diffEnvFile, "env", "e", defaultEnvFile, "path to the .env file")
+	diffCmd.Flags().StringVarP(&diffEnvFile, "file", "e", defaultEnvFile, "path to the .env file")
 	diffCmd.Flags().StringVarP(&diffVaultFile, "vault", "v", defaultVaultFile, "path to the vault file")
+	diffCmd.Flags().StringVar(&diffEnvName, "env", "", "environment name (e.g., staging, production)")
 	rootCmd.AddCommand(diffCmd)
 }
 
 func runDiff(cmd *cobra.Command, args []string) error {
+	envName := resolveEnvName(diffEnvName)
+
+	eFile := diffEnvFile
+	vFile := diffVaultFile
+	if envName != "" {
+		if eFile == defaultEnvFile {
+			eFile = envFilePath(envName)
+		}
+		if vFile == defaultVaultFile {
+			vFile = vaultFilePath(envName)
+		}
+	}
+
 	// Load key (validates permissions).
 	key, err := loadKey()
 	if err != nil {
@@ -40,12 +58,12 @@ func runDiff(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse current .env (may not exist).
-	envPairs, envErr := env.ParseFile(diffEnvFile)
+	envPairs, envErr := env.ParseFile(eFile)
 	envMap := pairsToMap(envPairs)
 
 	// Decrypt vault (may not exist).
 	var vaultMap map[string]string
-	vaultRaw, vaultReadErr := os.ReadFile(diffVaultFile)
+	vaultRaw, vaultReadErr := os.ReadFile(vFile)
 	if vaultReadErr == nil {
 		ciphertext, err := vault.Decode(vaultRaw)
 		if err != nil {
@@ -63,7 +81,7 @@ func runDiff(cmd *cobra.Command, args []string) error {
 	}
 
 	if envErr != nil && vaultReadErr != nil {
-		return fmt.Errorf("neither %s nor %s found", diffEnvFile, diffVaultFile)
+		return fmt.Errorf("neither %s nor %s found", eFile, vFile)
 	}
 
 	// Collect all keys.
