@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 - `xenvsync envs` command — discover and list all environments with sync status (#3)
 - `XENVSYNC_ENV` environment variable as fallback for `--env` flag
 - Named environment file convention: `.env.<name>` / `.env.<name>.vault`
+- Environment fallback merging: `.env.shared` < `.env.<name>` < `.env.local` (#2)
+- `--no-fallback` flag on push to disable merging for strict isolation
 - npm README for package page on npmjs.com
 
 ## [v1.1.1] - 2026-03-30

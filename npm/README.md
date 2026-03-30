@@ -57,6 +57,8 @@ xenvsync envs                   # list all discovered environments
 
 Set `XENVSYNC_ENV` to avoid passing `--env` every time.
 
+When pushing, variables are automatically merged from `.env.shared` (base) < `.env.<name>` (env) < `.env.local` (overrides). Use `--no-fallback` to disable.
+
 ## Why xenvsync?
 
 - **No cloud required** — works 100% offline, key stays on your machine

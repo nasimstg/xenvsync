@@ -166,9 +166,9 @@ const searchIndex: SearchEntry[] = [
     title: "Command Reference",
     section: "Docs",
     heading: "Multi-Environment",
-    keywords: ["multi-env", "env flag", "staging", "production", "named environment", "XENVSYNC_ENV"],
+    keywords: ["multi-env", "env flag", "staging", "production", "named environment", "XENVSYNC_ENV", "fallback", "shared", "local", "merge", "no-fallback"],
     content:
-      "Use --env flag on push pull run diff status and export to target named environments. File paths follow .env.<name> and .env.<name>.vault convention. Set XENVSYNC_ENV environment variable as fallback.",
+      "Use --env flag on push pull run diff status and export to target named environments. File paths follow .env.<name> and .env.<name>.vault convention. Set XENVSYNC_ENV environment variable as fallback. Merge precedence: .env.shared < .env.<name> < .env.local. Use --no-fallback to disable merging.",
   },
   {
     href: "/docs/commands#export",

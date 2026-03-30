@@ -47,16 +47,18 @@ $ xenvsync init --force`,
       { flag: "--env", description: "Environment name (e.g., staging, production)" },
       { flag: "--file, -e", description: "Path to the .env file (default: .env)" },
       { flag: "--out, -o", description: "Path to the output vault file (default: .env.vault)" },
+      { flag: "--no-fallback", description: "Disable .env.shared and .env.local merging" },
     ],
     example: `$ xenvsync push
 Encrypted 5 variable(s) → .env.vault
 
-# Named environment
+# Named environment (merges .env.shared < .env.staging < .env.local)
 $ xenvsync push --env staging
-Encrypted 3 variable(s) → .env.staging.vault
+Encrypted 7 variable(s) → .env.staging.vault
 
-# Custom paths
-$ xenvsync push -e .env.production -o .env.production.vault`,
+# Disable fallback merging
+$ xenvsync push --env staging --no-fallback
+Encrypted 3 variable(s) → .env.staging.vault`,
   },
   {
     name: "pull",

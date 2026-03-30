@@ -118,6 +118,18 @@ xenvsync envs                   # list all discovered environments
 
 You can also set `XENVSYNC_ENV` to avoid passing `--env` every time.
 
+### Fallback Merging
+
+When pushing, xenvsync automatically merges variables from fallback files if they exist:
+
+```
+.env.shared  →  base variables (lowest priority)
+.env.staging →  environment-specific overrides
+.env.local   →  developer-local overrides (highest priority)
+```
+
+Use `--no-fallback` to disable merging and encrypt only the primary file.
+
 ## Security Model
 
 | Property | Detail |
