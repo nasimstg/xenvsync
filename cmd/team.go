@@ -112,10 +112,10 @@ func runTeamList(cmd *cobra.Command, args []string) error {
 	fmt.Printf("Team roster (%d member(s)):\n", len(roster.Members))
 
 	w := tabwriter.NewWriter(cmd.OutOrStdout(), 0, 0, 2, ' ', 0)
-	fmt.Fprintln(w, "  NAME\tPUBLIC KEY\tADDED")
+	_, _ = fmt.Fprintln(w, "  NAME\tPUBLIC KEY\tADDED")
 	for _, m := range roster.Members {
-		fmt.Fprintf(w, "  %s\t%s\t%s\n", m.Name, m.PublicKey, m.AddedAt.Format("2006-01-02"))
+		_, _ = fmt.Fprintf(w, "  %s\t%s\t%s\n", m.Name, m.PublicKey, m.AddedAt.Format("2006-01-02"))
 	}
-	w.Flush()
+	_ = w.Flush()
 	return nil
 }

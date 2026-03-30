@@ -10,11 +10,22 @@ import (
 	"github.com/nasimstg/xenvsync/internal/team"
 )
 
-func TestTeamAdd(t *testing.T) {
+func chdirTemp(t *testing.T) string {
+	t.Helper()
+	orig, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
 	dir := t.TempDir()
 	if err := os.Chdir(dir); err != nil {
 		t.Fatal(err)
 	}
+	t.Cleanup(func() { _ = os.Chdir(orig) })
+	return dir
+}
+
+func TestTeamAdd(t *testing.T) {
+	dir := chdirTemp(t)
 
 	kp, _ := crypto.GenerateKeypair()
 	pubKey := kp.EncodePublicKey()
@@ -41,10 +52,7 @@ func TestTeamAdd(t *testing.T) {
 }
 
 func TestTeamAdd_InvalidKey(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.Chdir(dir); err != nil {
-		t.Fatal(err)
-	}
+	_ = chdirTemp(t)
 
 	rootCmd.SetArgs([]string{"team", "add", "bob", "not-a-valid-key"})
 	if err := rootCmd.Execute(); err == nil {
@@ -53,10 +61,7 @@ func TestTeamAdd_InvalidKey(t *testing.T) {
 }
 
 func TestTeamAdd_DuplicateName(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.Chdir(dir); err != nil {
-		t.Fatal(err)
-	}
+	_ = chdirTemp(t)
 
 	kp1, _ := crypto.GenerateKeypair()
 	kp2, _ := crypto.GenerateKeypair()
@@ -71,10 +76,7 @@ func TestTeamAdd_DuplicateName(t *testing.T) {
 }
 
 func TestTeamRemove(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.Chdir(dir); err != nil {
-		t.Fatal(err)
-	}
+	dir := chdirTemp(t)
 
 	kp, _ := crypto.GenerateKeypair()
 
@@ -93,10 +95,7 @@ func TestTeamRemove(t *testing.T) {
 }
 
 func TestTeamRemove_NotFound(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.Chdir(dir); err != nil {
-		t.Fatal(err)
-	}
+	_ = chdirTemp(t)
 
 	rootCmd.SetArgs([]string{"team", "remove", "ghost"})
 	if err := rootCmd.Execute(); err == nil {
@@ -105,10 +104,7 @@ func TestTeamRemove_NotFound(t *testing.T) {
 }
 
 func TestTeamList_Empty(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.Chdir(dir); err != nil {
-		t.Fatal(err)
-	}
+	_ = chdirTemp(t)
 
 	rootCmd.SetArgs([]string{"team", "list"})
 	if err := rootCmd.Execute(); err != nil {
@@ -117,10 +113,7 @@ func TestTeamList_Empty(t *testing.T) {
 }
 
 func TestTeamList_WithMembers(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.Chdir(dir); err != nil {
-		t.Fatal(err)
-	}
+	_ = chdirTemp(t)
 
 	kp1, _ := crypto.GenerateKeypair()
 	kp2, _ := crypto.GenerateKeypair()
@@ -137,10 +130,7 @@ func TestTeamList_WithMembers(t *testing.T) {
 }
 
 func TestRosterFile_IsValidJSON(t *testing.T) {
-	dir := t.TempDir()
-	if err := os.Chdir(dir); err != nil {
-		t.Fatal(err)
-	}
+	dir := chdirTemp(t)
 
 	kp, _ := crypto.GenerateKeypair()
 	rootCmd.SetArgs([]string{"team", "add", "alice", kp.EncodePublicKey()})
