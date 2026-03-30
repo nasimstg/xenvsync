@@ -42,8 +42,20 @@ xenvsync run -- npm start        # inject secrets into process (in-memory)
 | `xenvsync run -- <cmd>` | Decrypt in-memory and inject into a child process |
 | `xenvsync diff` | Preview changes between `.env` and the vault |
 | `xenvsync status` | Show file presence, timestamps, and sync direction |
+| `xenvsync envs` | List all discovered environments and sync status |
 | `xenvsync export` | Decrypt vault and output as JSON, YAML, shell, tfvars, or dotenv |
 | `xenvsync completion` | Generate shell completions (bash/zsh/fish/powershell) |
+
+## Multi-Environment Support
+
+```bash
+xenvsync push --env staging     # .env.staging → .env.staging.vault
+xenvsync pull --env production  # .env.production.vault → .env.production
+xenvsync run --env staging -- npm start
+xenvsync envs                   # list all discovered environments
+```
+
+Set `XENVSYNC_ENV` to avoid passing `--env` every time.
 
 ## Why xenvsync?
 

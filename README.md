@@ -92,14 +92,31 @@ xenvsync run -- npm start        # inject secrets into process (in-memory, no .e
 | Command | Description |
 |---------|-------------|
 | `xenvsync init [--force]` | Generate a 256-bit key, add it to `.gitignore` |
-| `xenvsync push` | Encrypt `.env` → `.env.vault` |
-| `xenvsync pull` | Decrypt `.env.vault` → `.env` |
-| `xenvsync run -- <cmd>` | Decrypt in-memory and inject into a child process |
-| `xenvsync diff` | Preview changes between `.env` and the vault |
-| `xenvsync status` | Show file presence, timestamps, and sync direction |
+| `xenvsync push [--env NAME]` | Encrypt `.env` → `.env.vault` |
+| `xenvsync pull [--env NAME]` | Decrypt `.env.vault` → `.env` |
+| `xenvsync run [--env NAME] -- <cmd>` | Decrypt in-memory and inject into a child process |
+| `xenvsync diff [--env NAME]` | Preview changes between `.env` and the vault |
+| `xenvsync status [--env NAME]` | Show file presence, timestamps, and sync direction |
+| `xenvsync envs` | List all discovered environments and their sync status |
+| `xenvsync export [--format FMT]` | Decrypt vault and output as JSON, YAML, shell, tfvars, or dotenv |
+| `xenvsync completion [SHELL]` | Generate shell completions (bash/zsh/fish/powershell) |
 | `xenvsync version` | Print version, commit, and build date |
 
 > **Aliases**: `push` = `encrypt`, `pull` = `decrypt`
+
+## Multi-Environment Support
+
+Use `--env` to work with named environments. File paths follow the convention `.env.<name>` / `.env.<name>.vault`:
+
+```bash
+xenvsync push --env staging     # .env.staging → .env.staging.vault
+xenvsync pull --env production  # .env.production.vault → .env.production
+xenvsync run --env staging -- npm start
+xenvsync diff --env staging
+xenvsync envs                   # list all discovered environments
+```
+
+You can also set `XENVSYNC_ENV` to avoid passing `--env` every time.
 
 ## Security Model
 

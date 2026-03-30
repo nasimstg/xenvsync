@@ -153,6 +153,24 @@ const searchIndex: SearchEntry[] = [
       "status reports file presence last-modified timestamps and permissions. Warns about insecure key file permissions and suggests whether to push or pull.",
   },
   {
+    href: "/docs/commands#envs",
+    title: "Command Reference",
+    section: "Docs",
+    heading: "envs",
+    keywords: ["envs", "environments", "list", "discover", "staging", "production", "multi-env"],
+    content:
+      "envs scans current directory for .env.* and .env.*.vault files and displays all discovered environments with sync status. Shows whether each environment is synced, not pushed, or not pulled.",
+  },
+  {
+    href: "/docs/commands#push",
+    title: "Command Reference",
+    section: "Docs",
+    heading: "Multi-Environment",
+    keywords: ["multi-env", "env flag", "staging", "production", "named environment", "XENVSYNC_ENV"],
+    content:
+      "Use --env flag on push pull run diff status and export to target named environments. File paths follow .env.<name> and .env.<name>.vault convention. Set XENVSYNC_ENV environment variable as fallback.",
+  },
+  {
     href: "/docs/commands#export",
     title: "Command Reference",
     section: "Docs",

@@ -3,7 +3,7 @@ import { Section, PageHeader, StaggerList, StaggerItem } from "@/components/Docs
 
 export const metadata = {
   title: "Command Reference - xenvsync",
-  description: "Complete reference for all xenvsync commands: init, push, pull, run, diff, status, export, completion, and version with flags, aliases, and examples.",
+  description: "Complete reference for all xenvsync commands: init, push, pull, run, diff, status, envs, export, completion, and version with flags, aliases, and examples.",
   openGraph: {
     title: "Command Reference - xenvsync",
     description: "All xenvsync commands, flags, aliases, and usage examples.",
@@ -44,11 +44,16 @@ $ xenvsync init --force`,
       "Reads the plaintext .env file, encrypts it using AES-256-GCM, and writes the ciphertext to .env.vault. The vault file is safe to commit to version control.",
     usage: "xenvsync push [flags]",
     flags: [
-      { flag: "--env, -e", description: "Path to the .env file (default: .env)" },
+      { flag: "--env", description: "Environment name (e.g., staging, production)" },
+      { flag: "--file, -e", description: "Path to the .env file (default: .env)" },
       { flag: "--out, -o", description: "Path to the output vault file (default: .env.vault)" },
     ],
     example: `$ xenvsync push
 Encrypted 5 variable(s) → .env.vault
+
+# Named environment
+$ xenvsync push --env staging
+Encrypted 3 variable(s) → .env.staging.vault
 
 # Custom paths
 $ xenvsync push -e .env.production -o .env.production.vault`,
@@ -60,11 +65,16 @@ $ xenvsync push -e .env.production -o .env.production.vault`,
       "Reads the encrypted .env.vault, decrypts it using the local .xenvsync.key, and writes the plaintext variables to .env.",
     usage: "xenvsync pull [flags]",
     flags: [
+      { flag: "--env", description: "Environment name (e.g., staging, production)" },
       { flag: "--vault, -v", description: "Path to the vault file (default: .env.vault)" },
       { flag: "--out, -o", description: "Path to the output .env file (default: .env)" },
     ],
     example: `$ xenvsync pull
 Decrypted 5 variable(s) → .env
+
+# Named environment
+$ xenvsync pull --env staging
+Decrypted 3 variable(s) → .env.staging
 
 # Custom paths
 $ xenvsync pull -v .env.staging.vault -o .env.staging`,
@@ -75,12 +85,13 @@ $ xenvsync pull -v .env.staging.vault -o .env.staging`,
       "Decrypts the vault in-memory and spawns a child process with the decrypted variables merged into the environment. Plaintext secrets never touch disk — they exist only in the child process's memory.",
     usage: "xenvsync run [flags] -- <command> [args...]",
     flags: [
+      { flag: "--env", description: "Environment name (e.g., staging, production)" },
       { flag: "--vault, -v", description: "Path to the vault file (default: .env.vault)" },
     ],
     example: `$ xenvsync run -- npm start
+$ xenvsync run --env staging -- npm start
 $ xenvsync run -- python manage.py runserver
-$ xenvsync run -- docker compose up
-$ xenvsync run -v .env.staging.vault -- node server.js`,
+$ xenvsync run -- docker compose up`,
   },
   {
     name: "diff",
@@ -88,7 +99,8 @@ $ xenvsync run -v .env.staging.vault -- node server.js`,
       "Decrypts the vault and compares its contents to the current .env file. Shows added, removed, and changed variables.",
     usage: "xenvsync diff [flags]",
     flags: [
-      { flag: "--env, -e", description: "Path to the .env file (default: .env)" },
+      { flag: "--env", description: "Environment name (e.g., staging, production)" },
+      { flag: "--file, -e", description: "Path to the .env file (default: .env)" },
       { flag: "--vault, -v", description: "Path to the vault file (default: .env.vault)" },
     ],
     example: `$ xenvsync diff
@@ -102,8 +114,10 @@ $ xenvsync run -v .env.staging.vault -- node server.js`,
     name: "status",
     description:
       "Reports the presence and last-modified time of .xenvsync.key, .env, and .env.vault. Warns about insecure key file permissions and suggests whether to push or pull.",
-    usage: "xenvsync status",
-    flags: [],
+    usage: "xenvsync status [flags]",
+    flags: [
+      { flag: "--env", description: "Environment name (e.g., staging, production)" },
+    ],
     example: `$ xenvsync status
 xenvsync status
 ───────────────────────────────────────
@@ -111,7 +125,22 @@ xenvsync status
   Env file  .env              2026-03-21 10:05:00  (0644)
   Vault     .env.vault        2026-03-21 09:30:00  (0644)
 ───────────────────────────────────────
-  .env is newer than vault → consider running: xenvsync push`,
+  .env is newer than vault → consider running: xenvsync push
+
+# Named environment
+$ xenvsync status --env staging`,
+  },
+  {
+    name: "envs",
+    description:
+      "Scans the current directory for .env.* and .env.*.vault files and displays all discovered environments with their sync status.",
+    usage: "xenvsync envs",
+    example: `$ xenvsync envs
+Discovered environments:
+───────────────────────────────────────
+  (default)      .env + .env.vault                    synced
+  staging        .env.staging + .env.staging.vault     synced
+  production     .env.production.vault                 not pulled`,
   },
   {
     name: "export",
@@ -119,6 +148,7 @@ xenvsync status
       "Decrypts the vault and writes variables to stdout in the specified format. Output is always written to stdout (never to disk) to preserve the security model.",
     usage: "xenvsync export [flags]",
     flags: [
+      { flag: "--env", description: "Environment name (e.g., staging, production)" },
       { flag: "--format, -f", description: "Output format: dotenv, json, yaml, shell, tfvars (default: dotenv)" },
       { flag: "--vault, -v", description: "Path to the vault file (default: .env.vault)" },
     ],
