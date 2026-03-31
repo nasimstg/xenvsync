@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/nasimstg/xenvsync/internal/env"
 
@@ -10,9 +9,10 @@ import (
 )
 
 var (
-	diffEnvFile   string
-	diffVaultFile string
-	diffEnvName   string
+	diffEnvFile    string
+	diffVaultFile  string
+	diffEnvName    string
+	diffShowValues bool
 )
 
 var diffCmd = &cobra.Command{
@@ -21,6 +21,9 @@ var diffCmd = &cobra.Command{
 	Long: `Decrypts the vault and compares its contents to the current .env file.
 Displays added, removed, and changed variables so you can preview
 what a push or pull would do.
+
+By default, only key names are shown (values are hidden). Use
+--show-values to display actual values.
 
 Use --env to target a named environment:
   xenvsync diff --env staging`,
@@ -31,6 +34,7 @@ func init() {
 	diffCmd.Flags().StringVarP(&diffEnvFile, "file", "e", defaultEnvFile, "path to the .env file")
 	diffCmd.Flags().StringVarP(&diffVaultFile, "vault", "v", defaultVaultFile, "path to the vault file")
 	diffCmd.Flags().StringVar(&diffEnvName, "env", "", "environment name (e.g., staging, production)")
+	diffCmd.Flags().BoolVar(&diffShowValues, "show-values", false, "display actual values in output (sensitive)")
 	rootCmd.AddCommand(diffCmd)
 }
 
@@ -50,64 +54,22 @@ func runDiff(cmd *cobra.Command, args []string) error {
 
 	// Parse current .env (may not exist).
 	envPairs, envErr := env.ParseFile(eFile)
-	envMap := pairsToMap(envPairs)
 
 	// Decrypt vault (may not exist).
-	var vaultMap map[string]string
 	vaultPairs, vaultErr := decryptVaultPairs(vFile)
-	if vaultErr == nil {
-		vaultMap = pairsToMap(vaultPairs)
-	}
 
 	if envErr != nil && vaultErr != nil {
 		return fmt.Errorf("neither %s nor %s found", eFile, vFile)
 	}
 
-	// Collect all keys.
-	allKeys := make(map[string]bool)
-	for k := range envMap {
-		allKeys[k] = true
-	}
-	for k := range vaultMap {
-		allKeys[k] = true
-	}
+	changes := computeKeyChanges(vaultPairs, envPairs)
 
-	sorted := make([]string, 0, len(allKeys))
-	for k := range allKeys {
-		sorted = append(sorted, k)
-	}
-	sort.Strings(sorted)
-
-	changes := 0
-	for _, k := range sorted {
-		envVal, inEnv := envMap[k]
-		vaultVal, inVault := vaultMap[k]
-
-		switch {
-		case inEnv && !inVault:
-			fmt.Printf("+ %s=%s  (in .env only, not yet pushed)\n", k, envVal)
-			changes++
-		case !inEnv && inVault:
-			fmt.Printf("- %s=%s  (in vault only, not yet pulled)\n", k, vaultVal)
-			changes++
-		case envVal != vaultVal:
-			fmt.Printf("~ %s  (changed)\n", k)
-			fmt.Printf("    .env:   %s\n", envVal)
-			fmt.Printf("    vault:  %s\n", vaultVal)
-			changes++
-		}
-	}
-
-	if changes == 0 {
+	if len(changes) == 0 {
 		fmt.Println("No differences — .env and vault are in sync.")
+		return nil
 	}
-	return nil
-}
 
-func pairsToMap(pairs []env.Pair) map[string]string {
-	m := make(map[string]string, len(pairs))
-	for _, p := range pairs {
-		m[p.Key] = p.Value
-	}
-	return m
+	fmt.Print(formatKeyChanges(changes, diffShowValues, ".env", "vault"))
+	fmt.Println(changeSummary(changes))
+	return nil
 }
