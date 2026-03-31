@@ -1,0 +1,40 @@
+#!/bin/sh
+# xenvsync pre-commit hook
+#
+# Blocks commits when the .env file is newer than .env.vault,
+# preventing stale vaults from being committed.
+#
+# Install:
+#   cp examples/hooks/pre-commit .git/hooks/pre-commit
+#   chmod +x .git/hooks/pre-commit
+#
+# Or with a symlink:
+#   ln -sf ../../examples/hooks/pre-commit .git/hooks/pre-commit
+
+set -e
+
+# Check if xenvsync is installed.
+if ! command -v xenvsync >/dev/null 2>&1; then
+    echo "xenvsync: not found — skipping vault checks"
+    exit 0
+fi
+
+# Run verify and fail on errors.
+echo "xenvsync: running vault verification..."
+if ! xenvsync verify 2>&1; then
+    echo ""
+    echo "xenvsync: vault verification failed."
+    echo "Run 'xenvsync push' to update the vault, then try again."
+    exit 1
+fi
+
+# Check if .env is staged (it should not be committed).
+if git diff --cached --name-only | grep -q '^\.env$'; then
+    echo ""
+    echo "xenvsync: WARNING — .env is staged for commit!"
+    echo "This file contains plaintext secrets and should not be committed."
+    echo "Run 'git reset HEAD .env' to unstage it."
+    exit 1
+fi
+
+exit 0
