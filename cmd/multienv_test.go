@@ -30,6 +30,8 @@ func resetAllFlags() {
 	logShowValues = false
 	logLimit = 10
 	verifyEnvName = ""
+	doctorEnvName = ""
+	initPassphrase = false
 }
 
 func TestPushPull_NamedEnv(t *testing.T) {

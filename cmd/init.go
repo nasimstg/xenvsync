@@ -15,7 +15,10 @@ const (
 	gitignoreFile = ".gitignore"
 )
 
-var forceInit bool
+var (
+	forceInit      bool
+	initPassphrase bool
+)
 
 var initCmd = &cobra.Command{
 	Use:   "init",
@@ -30,6 +33,7 @@ Use --force to regenerate the key even if one already exists.`,
 
 func init() {
 	initCmd.Flags().BoolVarP(&forceInit, "force", "f", false, "overwrite existing key file")
+	initCmd.Flags().BoolVar(&initPassphrase, "passphrase", false, "encrypt the key file with a passphrase")
 	rootCmd.AddCommand(initCmd)
 }
 
@@ -45,11 +49,31 @@ func runInit(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to generate key: %w", err)
 	}
 
+	// Optionally protect the key with a passphrase.
+	var keyData string
+	if initPassphrase {
+		passphrase := os.Getenv("XENVSYNC_PASSPHRASE")
+		if passphrase == "" {
+			return fmt.Errorf("--passphrase requires XENVSYNC_PASSPHRASE environment variable to be set")
+		}
+		encrypted, err := crypto.PassphraseEncrypt(passphrase, []byte(key))
+		if err != nil {
+			return fmt.Errorf("failed to encrypt key: %w", err)
+		}
+		keyData = "enc:" + encrypted
+	} else {
+		keyData = key
+	}
+
 	// Write the key with owner-only permissions (0600).
-	if err := os.WriteFile(keyFile, []byte(key), 0600); err != nil {
+	if err := os.WriteFile(keyFile, []byte(keyData), 0600); err != nil {
 		return fmt.Errorf("failed to write %s: %w", keyFile, err)
 	}
-	fmt.Printf("Generated encryption key → %s (mode 0600)\n", keyFile)
+	if initPassphrase {
+		fmt.Printf("Generated passphrase-protected encryption key → %s (mode 0600)\n", keyFile)
+	} else {
+		fmt.Printf("Generated encryption key → %s (mode 0600)\n", keyFile)
+	}
 
 	// Ensure .xenvsync.key and .env are in .gitignore.
 	if err := ensureGitignore(keyFile, ".env"); err != nil {
