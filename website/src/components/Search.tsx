@@ -189,6 +189,15 @@ const searchIndex: SearchEntry[] = [
       "team add registers a member's X25519 public key in .xenvsync-team.json. team remove revokes access. team list displays the roster. When roster exists push auto-encrypts for all members using V2 vault format.",
   },
   {
+    href: "/docs/commands#verify",
+    title: "Command Reference",
+    section: "Docs",
+    heading: "verify",
+    keywords: ["verify", "integrity", "tamper", "duplicate", "stale", "GCM", "pre-commit", "hook", "validation"],
+    content:
+      "verify validates vault structural integrity and GCM authentication to detect tampering. Checks for duplicate keys in .env files and warns about stale vaults. Works with --env for named environments. Pre-commit hook available in examples/hooks.",
+  },
+  {
     href: "/docs/commands#log",
     title: "Command Reference",
     section: "Docs",

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.8.0] - 2026-04-01
+
+### Added
+- `xenvsync verify` command — validate vault integrity with structural checks, GCM authentication, duplicate key detection, and stale vault warnings (#13)
+- Pre-commit hook script (`examples/hooks/pre-commit`) that blocks commits when vault is stale or `.env` is staged
+- `--env` flag support on verify for named environments
+- Duplicate key detection warns about repeated keys in `.env` files
+
 ## [v1.7.0] - 2026-04-01
 
 ### Added
@@ -87,6 +95,7 @@ All notable changes to this project will be documented in this file.
 - npm package wrapper for `npm install -g @nasimstg/xenvsync`
 - CI pipeline with test matrix, linting, and automated releases
 
+[v1.8.0]: https://github.com/nasimstg/xenvsync/compare/v1.7.0...v1.8.0
 [v1.7.0]: https://github.com/nasimstg/xenvsync/compare/v1.6.0...v1.7.0
 [v1.6.0]: https://github.com/nasimstg/xenvsync/compare/v1.5.0...v1.6.0
 [v1.5.0]: https://github.com/nasimstg/xenvsync/compare/v1.4.0...v1.5.0

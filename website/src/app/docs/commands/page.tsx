@@ -208,6 +208,34 @@ Team roster (2 member(s)):
   bob      Ym9iJ3MgcHVibGljIGtleQ==...                   2026-03-30`,
   },
   {
+    name: "verify",
+    description:
+      "Validates vault file structural integrity, performs GCM authentication to detect tampering, checks for duplicate keys in .env files, and warns about stale vaults. Without a key, only structural checks run; with a key, full decrypt and authenticate is performed.",
+    usage: "xenvsync verify [flags]",
+    flags: [
+      { flag: "--env", description: "Environment name (e.g., staging, production)" },
+    ],
+    example: `$ xenvsync verify
+PASS  vault structure — valid V1 vault
+PASS  vault decrypt — GCM authenticated, 5 variable(s)
+PASS  duplicate keys — no duplicates in .env
+PASS  vault freshness — .env.vault is up to date
+
+Verification complete: 4 passed
+
+# With warnings
+$ xenvsync verify
+PASS  vault structure — valid V1 vault
+PASS  vault decrypt — GCM authenticated, 5 variable(s)
+WARN  duplicate key "API_KEY" appears 2 times in .env
+WARN  stale vault — .env is newer than .env.vault (consider running: xenvsync push)
+
+Verification complete: 2 passed, 2 warning(s)
+
+# Named environment
+$ xenvsync verify --env staging`,
+  },
+  {
     name: "log",
     description:
       "Parses Git history for commits that modified the vault file and displays a timeline of changes. For each commit, shows which keys were added, modified, or removed. Values are hidden by default.",

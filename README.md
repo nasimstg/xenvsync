@@ -103,6 +103,7 @@ xenvsync run -- npm start        # inject secrets into process (in-memory, no .e
 | `xenvsync team remove <name>` | Remove a team member from the roster |
 | `xenvsync team list` | List all team members and their public keys |
 | `xenvsync rotate [--env NAME] [--revoke NAME]` | Rotate encryption key and re-encrypt the vault |
+| `xenvsync verify [--env NAME]` | Verify vault integrity, detect duplicate keys |
 | `xenvsync log [--env NAME] [-n N]` | Show vault change history from Git commits |
 | `xenvsync envs` | List all discovered environments and their sync status |
 | `xenvsync export [--format FMT]` | Decrypt vault and output as JSON, YAML, shell, tfvars, or dotenv |
@@ -214,7 +215,8 @@ xenvsync/
 │   └── vault/                     # vault file format
 ├── examples/
 │   ├── docker/                    # Dockerfile, compose, entrypoint
-│   └── ci/                        # GitHub Actions, GitLab, CircleCI, Bitbucket
+│   ├── ci/                        # GitHub Actions, GitLab, CircleCI, Bitbucket
+│   └── hooks/                     # Git pre-commit hook
 ├── Makefile                       # build, test, lint, install
 ├── .goreleaser.yml                # cross-platform release builds
 └── .github/workflows/ci.yml       # CI: test matrix, lint, release
