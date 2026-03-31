@@ -23,6 +23,8 @@ func resetAllFlags() {
 	runVaultFile = defaultVaultFile
 	runEnvName = ""
 	statusEnvName = ""
+	rotateEnvName = ""
+	rotateRevoke = ""
 }
 
 func TestPushPull_NamedEnv(t *testing.T) {
