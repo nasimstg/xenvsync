@@ -13,11 +13,13 @@ import {
   Menu,
   X,
   ChevronRight,
+  ArrowRightLeft,
 } from "lucide-react";
 
 export const docPages = [
   { href: "/docs/getting-started", label: "Getting Started", icon: BookOpen, section: "Learn" },
   { href: "/docs/installation", label: "Installation", icon: Download, section: "Learn" },
+  { href: "/docs/migration", label: "Migration Guides", icon: ArrowRightLeft, section: "Learn" },
   { href: "/docs/commands", label: "Commands", icon: Terminal, section: "Reference" },
   { href: "/docs/security", label: "Security Model", icon: Shield, section: "Reference" },
   { href: "/roadmap", label: "Roadmap", icon: Map, section: "Project" },
