@@ -36,6 +36,7 @@ func decryptV1(vaultRaw []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer crypto.ZeroBytes(key)
 
 	ciphertext, err := vault.Decode(vaultRaw)
 	if err != nil {
