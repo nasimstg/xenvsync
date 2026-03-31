@@ -102,6 +102,7 @@ xenvsync run -- npm start        # inject secrets into process (in-memory, no .e
 | `xenvsync team add <name> <key>` | Register a team member's public key |
 | `xenvsync team remove <name>` | Remove a team member from the roster |
 | `xenvsync team list` | List all team members and their public keys |
+| `xenvsync rotate [--env NAME] [--revoke NAME]` | Rotate encryption key and re-encrypt the vault |
 | `xenvsync envs` | List all discovered environments and their sync status |
 | `xenvsync export [--format FMT]` | Decrypt vault and output as JSON, YAML, shell, tfvars, or dotenv |
 | `xenvsync completion [SHELL]` | Generate shell completions (bash/zsh/fish/powershell) |
@@ -159,6 +160,26 @@ xenvsync pull    # uses ~/.xenvsync/identity automatically
 ```
 
 V1 vaults (created without a team roster) are still fully readable.
+
+## Key Rotation
+
+Rotate encryption keys and re-encrypt the vault in one atomic step:
+
+```bash
+# V1 (symmetric key): generates new .xenvsync.key and re-encrypts
+xenvsync rotate
+
+# V2 (team mode): re-encrypts with fresh ephemeral keys for all members
+xenvsync rotate
+
+# Revoke a team member and rotate in one step
+xenvsync rotate --revoke exmember
+
+# Rotate a specific environment
+xenvsync rotate --env staging
+```
+
+When revoking a member, the member is removed from the roster and the vault is re-encrypted so they can no longer decrypt it — even if they have a copy of the old vault file.
 
 ## Security Model
 

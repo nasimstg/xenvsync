@@ -189,6 +189,15 @@ const searchIndex: SearchEntry[] = [
       "team add registers a member's X25519 public key in .xenvsync-team.json. team remove revokes access. team list displays the roster. When roster exists push auto-encrypts for all members using V2 vault format.",
   },
   {
+    href: "/docs/commands#rotate",
+    title: "Command Reference",
+    section: "Docs",
+    heading: "rotate",
+    keywords: ["rotate", "key rotation", "re-encrypt", "revoke", "member", "security", "atomic"],
+    content:
+      "rotate generates a new encryption key and re-encrypts the vault in one atomic step. V1 mode generates new symmetric key. V2 team mode re-encrypts for all roster members with fresh ephemeral keys. Use --revoke to remove a member and rotate simultaneously.",
+  },
+  {
     href: "/docs/commands#keygen",
     title: "Command Reference",
     section: "Docs",

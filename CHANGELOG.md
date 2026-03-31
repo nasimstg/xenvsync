@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.6.0] - 2026-03-30
+
+### Added
+- `xenvsync rotate` command — rotate encryption key and re-encrypt the vault in one atomic step (#11)
+- V1 mode: generates new symmetric key and re-encrypts with it
+- V2 mode: re-encrypts for all current roster members with fresh ephemeral keys
+- `--revoke <name>` flag to remove a team member and rotate in one step
+- `--env` flag support for rotating named environment vaults
+
 ## [v1.5.0] - 2026-03-30
 
 ### Added
@@ -65,6 +74,7 @@ All notable changes to this project will be documented in this file.
 - npm package wrapper for `npm install -g @nasimstg/xenvsync`
 - CI pipeline with test matrix, linting, and automated releases
 
+[v1.6.0]: https://github.com/nasimstg/xenvsync/compare/v1.5.0...v1.6.0
 [v1.5.0]: https://github.com/nasimstg/xenvsync/compare/v1.4.0...v1.5.0
 [v1.4.0]: https://github.com/nasimstg/xenvsync/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/nasimstg/xenvsync/compare/v1.2.0...v1.3.0

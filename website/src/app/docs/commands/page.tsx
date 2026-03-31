@@ -3,7 +3,7 @@ import { Section, PageHeader, StaggerList, StaggerItem } from "@/components/Docs
 
 export const metadata = {
   title: "Command Reference - xenvsync",
-  description: "Complete reference for all xenvsync commands: init, push, pull, run, diff, status, envs, export, completion, and version with flags, aliases, and examples.",
+  description: "Complete reference for all xenvsync commands: init, push, pull, run, diff, status, envs, export, rotate, completion, and version with flags, aliases, and examples.",
   openGraph: {
     title: "Command Reference - xenvsync",
     description: "All xenvsync commands, flags, aliases, and usage examples.",
@@ -197,6 +197,34 @@ Team roster (2 member(s)):
   NAME     PUBLIC KEY                                    ADDED
   alice    dGhpcyBpcyBhIGJhc2U2NCBwdWJsaWMga2V5...      2026-03-30
   bob      Ym9iJ3MgcHVibGljIGtleQ==...                   2026-03-30`,
+  },
+  {
+    name: "rotate",
+    description:
+      "Rotates the encryption key and re-encrypts the vault in one atomic step. In V1 mode, generates a new symmetric key. In V2 (team) mode, re-encrypts for all current roster members with fresh ephemeral keys. Use --revoke to remove a member and rotate simultaneously.",
+    usage: "xenvsync rotate [flags]",
+    flags: [
+      { flag: "--env", description: "Environment name (e.g., staging, production)" },
+      { flag: "--revoke", description: "Remove a team member and rotate in one step" },
+    ],
+    example: `# V1: rotate symmetric key
+$ xenvsync rotate
+Rotated key → .xenvsync.key (mode 0600)
+Rotated vault → .env.vault
+Rotation complete. 5 variable(s) re-encrypted.
+
+# V2: re-encrypt for all team members
+$ xenvsync rotate
+Rotated vault → .env.vault (V2, 3 recipient(s))
+Rotation complete. 5 variable(s) re-encrypted.
+
+# Revoke a member and rotate
+$ xenvsync rotate --revoke exmember
+Revoked exmember from team roster
+Rotated vault → .env.vault (V2, 2 recipient(s))
+
+# Rotate a named environment
+$ xenvsync rotate --env staging`,
   },
   {
     name: "keygen",
