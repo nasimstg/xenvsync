@@ -98,19 +98,28 @@ $ xenvsync run -- docker compose up`,
   {
     name: "diff",
     description:
-      "Decrypts the vault and compares its contents to the current .env file. Shows added, removed, and changed variables.",
+      "Decrypts the vault and compares its contents to the current .env file. Shows added, removed, and changed variables. Values are hidden by default for security — use --show-values to reveal them.",
     usage: "xenvsync diff [flags]",
     flags: [
       { flag: "--env", description: "Environment name (e.g., staging, production)" },
       { flag: "--file, -e", description: "Path to the .env file (default: .env)" },
       { flag: "--vault, -v", description: "Path to the vault file (default: .env.vault)" },
+      { flag: "--show-values", description: "Display actual values in output (sensitive)" },
     ],
     example: `$ xenvsync diff
++ NEW_KEY  (in .env only, not yet pushed)
+- OLD_KEY  (in vault only, not yet pulled)
+~ API_KEY  (changed)
+3 change(s): 1 added, 1 modified, 1 removed.
+
+# Show actual values
+$ xenvsync diff --show-values
 + NEW_KEY=value     (in .env only, not yet pushed)
 - OLD_KEY=removed   (in vault only, not yet pulled)
 ~ API_KEY  (changed)
     .env:   sk-new-key
-    vault:  sk-old-key`,
+    vault:  sk-old-key
+3 change(s): 1 added, 1 modified, 1 removed.`,
   },
   {
     name: "status",
@@ -197,6 +206,40 @@ Team roster (2 member(s)):
   NAME     PUBLIC KEY                                    ADDED
   alice    dGhpcyBpcyBhIGJhc2U2NCBwdWJsaWMga2V5...      2026-03-30
   bob      Ym9iJ3MgcHVibGljIGtleQ==...                   2026-03-30`,
+  },
+  {
+    name: "log",
+    description:
+      "Parses Git history for commits that modified the vault file and displays a timeline of changes. For each commit, shows which keys were added, modified, or removed. Values are hidden by default.",
+    usage: "xenvsync log [flags]",
+    flags: [
+      { flag: "--env", description: "Environment name (e.g., staging, production)" },
+      { flag: "--show-values", description: "Display actual decrypted values (sensitive)" },
+      { flag: "-n, --limit", description: "Maximum number of commits to show (default: 10)" },
+    ],
+    example: `$ xenvsync log
+Vault history for .env.vault (3 commit(s)):
+
+commit a1b2c3d (2026-04-01, alice)
+  Update API keys for v2
+  ~ API_KEY  (changed)
+  + NEW_SERVICE_URL  (in new only, not yet pushed)
+  2 change(s): 1 added, 1 modified.
+
+commit d4e5f6a (2026-03-30, bob)
+  Initial secrets
+  + DB_HOST  (in new only, not yet pushed)
+  + API_KEY  (in new only, not yet pushed)
+  2 change(s): 2 added.
+
+# Show values (sensitive)
+$ xenvsync log --show-values
+
+# Limit to last 5 commits
+$ xenvsync log -n 5
+
+# Named environment
+$ xenvsync log --env staging`,
   },
   {
     name: "rotate",

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.7.0] - 2026-04-01
+
+### Added
+- `xenvsync log` command — display vault change history from Git commits with key-level diffs (#12)
+- `--show-values` flag on `diff` and `log` for explicit opt-in to display secret values
+- `-n/--limit` flag on `log` to control how many commits are shown (default 10)
+- Shared diff engine (`diffutil.go`) with `computeKeyChanges` and `formatKeyChanges`
+- `decryptVaultBytes` helper for decrypting vault data from non-file sources
+
+### Changed
+- `diff` now hides values by default — only key names and change types are shown
+- `diff` output includes a summary line with counts of added/modified/removed keys
+
 ## [v1.6.0] - 2026-03-30
 
 ### Added
@@ -74,6 +87,7 @@ All notable changes to this project will be documented in this file.
 - npm package wrapper for `npm install -g @nasimstg/xenvsync`
 - CI pipeline with test matrix, linting, and automated releases
 
+[v1.7.0]: https://github.com/nasimstg/xenvsync/compare/v1.6.0...v1.7.0
 [v1.6.0]: https://github.com/nasimstg/xenvsync/compare/v1.5.0...v1.6.0
 [v1.5.0]: https://github.com/nasimstg/xenvsync/compare/v1.4.0...v1.5.0
 [v1.4.0]: https://github.com/nasimstg/xenvsync/compare/v1.3.0...v1.4.0

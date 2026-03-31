@@ -189,6 +189,15 @@ const searchIndex: SearchEntry[] = [
       "team add registers a member's X25519 public key in .xenvsync-team.json. team remove revokes access. team list displays the roster. When roster exists push auto-encrypts for all members using V2 vault format.",
   },
   {
+    href: "/docs/commands#log",
+    title: "Command Reference",
+    section: "Docs",
+    heading: "log",
+    keywords: ["log", "history", "audit", "timeline", "changes", "git", "commits", "vault history"],
+    content:
+      "log parses Git history for commits that modified the vault file and displays a timeline of changes. Shows which keys were added modified or removed per commit. Values hidden by default. Use --show-values for actual values. Use -n to limit commits shown.",
+  },
+  {
     href: "/docs/commands#rotate",
     title: "Command Reference",
     section: "Docs",

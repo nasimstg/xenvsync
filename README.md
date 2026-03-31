@@ -95,7 +95,7 @@ xenvsync run -- npm start        # inject secrets into process (in-memory, no .e
 | `xenvsync push [--env NAME]` | Encrypt `.env` → `.env.vault` |
 | `xenvsync pull [--env NAME]` | Decrypt `.env.vault` → `.env` |
 | `xenvsync run [--env NAME] -- <cmd>` | Decrypt in-memory and inject into a child process |
-| `xenvsync diff [--env NAME]` | Preview changes between `.env` and the vault |
+| `xenvsync diff [--env NAME] [--show-values]` | Preview changes between `.env` and the vault |
 | `xenvsync status [--env NAME]` | Show file presence, timestamps, and sync direction |
 | `xenvsync keygen [--force]` | Generate an X25519 keypair for team vault encryption |
 | `xenvsync whoami` | Display your public key and identity path |
@@ -103,6 +103,7 @@ xenvsync run -- npm start        # inject secrets into process (in-memory, no .e
 | `xenvsync team remove <name>` | Remove a team member from the roster |
 | `xenvsync team list` | List all team members and their public keys |
 | `xenvsync rotate [--env NAME] [--revoke NAME]` | Rotate encryption key and re-encrypt the vault |
+| `xenvsync log [--env NAME] [-n N]` | Show vault change history from Git commits |
 | `xenvsync envs` | List all discovered environments and their sync status |
 | `xenvsync export [--format FMT]` | Decrypt vault and output as JSON, YAML, shell, tfvars, or dotenv |
 | `xenvsync completion [SHELL]` | Generate shell completions (bash/zsh/fish/powershell) |
