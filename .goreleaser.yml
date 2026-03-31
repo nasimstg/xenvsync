@@ -43,6 +43,26 @@ nfpms:
       - rpm
       - apk
 
+brews:
+  - repository:
+      owner: nasimstg
+      name: homebrew-tap
+    homepage: "https://github.com/nasimstg/xenvsync"
+    description: "Encrypt, commit, and inject .env secrets — no cloud required"
+    license: "MIT"
+    install: |
+      bin.install "xenvsync"
+    test: |
+      system "#{bin}/xenvsync", "version"
+
+scoops:
+  - repository:
+      owner: nasimstg
+      name: scoop-bucket
+    homepage: "https://github.com/nasimstg/xenvsync"
+    description: "Encrypt, commit, and inject .env secrets — no cloud required"
+    license: "MIT"
+
 changelog:
   sort: asc
   filters:

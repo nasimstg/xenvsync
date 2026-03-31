@@ -34,6 +34,13 @@
 ## Install
 
 ```bash
+# Homebrew (macOS / Linux)
+brew install nasimstg/tap/xenvsync
+
+# Scoop (Windows)
+scoop bucket add nasimstg https://github.com/nasimstg/scoop-bucket
+scoop install xenvsync
+
 # npm
 npm install -g @nasimstg/xenvsync
 
@@ -42,6 +49,9 @@ npx @nasimstg/xenvsync
 
 # Go 1.22+
 go install github.com/nasimstg/xenvsync@latest
+
+# Nix
+nix run github:nasimstg/xenvsync
 ```
 
 Or download a prebuilt binary from [Releases](https://github.com/nasimstg/xenvsync/releases).
@@ -53,6 +63,16 @@ Or download a prebuilt binary from [Releases](https://github.com/nasimstg/xenvsy
 git clone https://github.com/nasimstg/xenvsync.git
 cd xenvsync
 make build
+```
+</details>
+
+<details>
+<summary>Arch Linux (AUR)</summary>
+
+```bash
+git clone https://aur.archlinux.org/xenvsync.git
+cd xenvsync
+makepkg -si
 ```
 </details>
 
@@ -220,6 +240,9 @@ xenvsync/
 │   ├── docker/                    # Dockerfile, compose, entrypoint
 │   ├── ci/                        # GitHub Actions, GitLab, CircleCI, Bitbucket
 │   └── hooks/                     # Git pre-commit hook
+├── packaging/
+│   └── aur/                       # Arch Linux AUR PKGBUILD
+├── flake.nix                      # Nix flake for NixOS / nix users
 ├── Makefile                       # build, test, lint, install
 ├── .goreleaser.yml                # cross-platform release builds
 └── .github/workflows/ci.yml       # CI: test matrix, lint, release

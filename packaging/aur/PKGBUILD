@@ -1,0 +1,23 @@
+# Maintainer: Md Nasim Sheikh <nasim.stg@gmail.com>
+pkgname=xenvsync
+pkgver=1.9.0
+pkgrel=1
+pkgdesc="Encrypt, commit, and inject .env secrets — no cloud required"
+arch=('x86_64' 'aarch64')
+url="https://github.com/nasimstg/xenvsync"
+license=('MIT')
+makedepends=('go')
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/nasimstg/xenvsync/archive/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  export CGO_ENABLED=0
+  go build -ldflags "-s -w -X main.version=${pkgver}" -o "${pkgname}" .
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  install -Dm755 "${pkgname}" "${pkgdir}/usr/bin/${pkgname}"
+  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
