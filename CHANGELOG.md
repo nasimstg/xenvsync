@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.11.0] - 2026-04-01
+
+### Added
+- Migration guides from dotenv-vault, sops, and git-crypt (#18)
+- Feature comparison table on migration docs page
+- Migration page in sidebar navigation and search index
+
 ## [v1.10.0] - 2026-04-01
 
 ### Added
@@ -110,6 +117,7 @@ All notable changes to this project will be documented in this file.
 - npm package wrapper for `npm install -g @nasimstg/xenvsync`
 - CI pipeline with test matrix, linting, and automated releases
 
+[v1.11.0]: https://github.com/nasimstg/xenvsync/compare/v1.10.0...v1.11.0
 [v1.10.0]: https://github.com/nasimstg/xenvsync/compare/v1.9.0...v1.10.0
 [v1.9.0]: https://github.com/nasimstg/xenvsync/compare/v1.8.0...v1.9.0
 [v1.8.0]: https://github.com/nasimstg/xenvsync/compare/v1.7.0...v1.8.0
