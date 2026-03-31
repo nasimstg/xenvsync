@@ -189,6 +189,15 @@ const searchIndex: SearchEntry[] = [
       "team add registers a member's X25519 public key in .xenvsync-team.json. team remove revokes access. team list displays the roster. When roster exists push auto-encrypts for all members using V2 vault format.",
   },
   {
+    href: "/docs/commands#doctor",
+    title: "Command Reference",
+    section: "Docs",
+    heading: "doctor",
+    keywords: ["doctor", "audit", "security", "permissions", "gitignore", "key strength", "health check", "setup"],
+    content:
+      "doctor audits local xenvsync setup for security issues. Checks key file existence permissions and strength, gitignore entries, vault structure and decrypt, stale vault detection, and X25519 identity configuration. Reports pass fail warn skip for each check.",
+  },
+  {
     href: "/docs/commands#verify",
     title: "Command Reference",
     section: "Docs",

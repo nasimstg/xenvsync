@@ -91,7 +91,7 @@ xenvsync run -- npm start        # inject secrets into process (in-memory, no .e
 
 | Command | Description |
 |---------|-------------|
-| `xenvsync init [--force]` | Generate a 256-bit key, add it to `.gitignore` |
+| `xenvsync init [--force] [--passphrase]` | Generate a 256-bit key, add it to `.gitignore` |
 | `xenvsync push [--env NAME]` | Encrypt `.env` → `.env.vault` |
 | `xenvsync pull [--env NAME]` | Decrypt `.env.vault` → `.env` |
 | `xenvsync run [--env NAME] -- <cmd>` | Decrypt in-memory and inject into a child process |
@@ -103,6 +103,7 @@ xenvsync run -- npm start        # inject secrets into process (in-memory, no .e
 | `xenvsync team remove <name>` | Remove a team member from the roster |
 | `xenvsync team list` | List all team members and their public keys |
 | `xenvsync rotate [--env NAME] [--revoke NAME]` | Rotate encryption key and re-encrypt the vault |
+| `xenvsync doctor [--env NAME]` | Audit local setup for security issues |
 | `xenvsync verify [--env NAME]` | Verify vault integrity, detect duplicate keys |
 | `xenvsync log [--env NAME] [-n N]` | Show vault change history from Git commits |
 | `xenvsync envs` | List all discovered environments and their sync status |
@@ -193,6 +194,8 @@ When revoking a member, the member is removed from the roster and the vault is r
 | Vault layout | `[nonce ‖ ciphertext ‖ GCM tag]`, base64-wrapped with header/footer |
 | Key isolation | Never embedded in vault output. Auto-added to `.gitignore` on `init` |
 | Identity | X25519 keypair at `~/.xenvsync/identity` (mode 0600) for asymmetric team sharing |
+| Passphrase | Optional key-encryption-key via scrypt (N=32768, r=8, p=1) + AES-256-GCM |
+| Memory zeroing | Key material overwritten with zeros after use |
 | Permission check | Warns at runtime if key file is readable by group/others |
 
 ## Project Structure

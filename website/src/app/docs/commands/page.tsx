@@ -29,13 +29,19 @@ const commands: CommandDef[] = [
     usage: "xenvsync init [flags]",
     flags: [
       { flag: "--force, -f", description: "Overwrite existing key file (regenerate key)" },
+      { flag: "--passphrase", description: "Encrypt the key file with a passphrase (requires XENVSYNC_PASSPHRASE env var)" },
     ],
     example: `$ xenvsync init
 Generated encryption key → .xenvsync.key (mode 0600)
 Updated .gitignore (added .xenvsync.key, .env)
 
 # Regenerate key
-$ xenvsync init --force`,
+$ xenvsync init --force
+
+# Passphrase-protected key
+$ export XENVSYNC_PASSPHRASE="my-secret-passphrase"
+$ xenvsync init --passphrase
+Generated passphrase-protected encryption key → .xenvsync.key (mode 0600)`,
   },
   {
     name: "push",
@@ -206,6 +212,32 @@ Team roster (2 member(s)):
   NAME     PUBLIC KEY                                    ADDED
   alice    dGhpcyBpcyBhIGJhc2U2NCBwdWJsaWMga2V5...      2026-03-30
   bob      Ym9iJ3MgcHVibGljIGtleQ==...                   2026-03-30`,
+  },
+  {
+    name: "doctor",
+    description:
+      "Audits the local xenvsync setup for security issues. Checks key file existence, permissions, strength, .gitignore entries, vault structure and decryptability, stale vault detection, and X25519 identity configuration.",
+    usage: "xenvsync doctor [flags]",
+    flags: [
+      { flag: "--env", description: "Environment name (e.g., staging, production)" },
+    ],
+    example: `$ xenvsync doctor
+xenvsync doctor
+───────────────────────────────────────
+  OK  Key file .xenvsync.key exists
+  OK  Key file permissions: 0600
+  OK  Key strength: 256 bits
+  OK  .xenvsync.key in .gitignore
+  OK  .env in .gitignore
+  OK  Vault structure: valid V1
+  OK  Vault decrypt: OK (45 bytes)
+  OK  Vault is up to date
+  OK  Identity: /home/you/.xenvsync/identity
+───────────────────────────────────────
+  9 passed, 0 warning(s), 0 failed, 0 skipped
+
+# Named environment
+$ xenvsync doctor --env staging`,
   },
   {
     name: "verify",

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.9.0] - 2026-04-01
+
+### Added
+- `xenvsync doctor` command — audit local setup for security issues (permissions, gitignore, key strength, vault integrity, identity) (#14)
+- Passphrase protection for key files with `init --passphrase` and `XENVSYNC_PASSPHRASE` env var (scrypt + AES-256-GCM key-encryption-key)
+- Memory zeroing for key material after use (`crypto.ZeroBytes`)
+
 ## [v1.8.0] - 2026-04-01
 
 ### Added
@@ -95,6 +102,7 @@ All notable changes to this project will be documented in this file.
 - npm package wrapper for `npm install -g @nasimstg/xenvsync`
 - CI pipeline with test matrix, linting, and automated releases
 
+[v1.9.0]: https://github.com/nasimstg/xenvsync/compare/v1.8.0...v1.9.0
 [v1.8.0]: https://github.com/nasimstg/xenvsync/compare/v1.7.0...v1.8.0
 [v1.7.0]: https://github.com/nasimstg/xenvsync/compare/v1.6.0...v1.7.0
 [v1.6.0]: https://github.com/nasimstg/xenvsync/compare/v1.5.0...v1.6.0
