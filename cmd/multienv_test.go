@@ -29,6 +29,7 @@ func resetAllFlags() {
 	logEnvName = ""
 	logShowValues = false
 	logLimit = 10
+	verifyEnvName = ""
 }
 
 func TestPushPull_NamedEnv(t *testing.T) {
