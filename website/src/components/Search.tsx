@@ -279,6 +279,44 @@ const searchIndex: SearchEntry[] = [
       "version prints version commit hash and build date. Build info is injected at compile time via ldflags.",
   },
 
+  // Migration Guides
+  {
+    href: "/docs/migration",
+    title: "Migration Guides",
+    section: "Docs",
+    heading: "From dotenv-vault",
+    keywords: ["migration", "dotenv-vault", "switch", "migrate", "cloud", "DOTENV_KEY"],
+    content:
+      "Step-by-step guide to migrate from dotenv-vault to xenvsync. Export secrets from dotenv-vault, set up xenvsync, and verify the migration. No cloud dependency needed.",
+  },
+  {
+    href: "/docs/migration",
+    title: "Migration Guides",
+    section: "Docs",
+    heading: "From sops",
+    keywords: ["migration", "sops", "switch", "migrate", "kms", "pgp", "age", "yaml"],
+    content:
+      "Step-by-step guide to migrate from sops to xenvsync. Decrypt sops files, set up xenvsync encryption, and clean up sops configuration.",
+  },
+  {
+    href: "/docs/migration",
+    title: "Migration Guides",
+    section: "Docs",
+    heading: "From git-crypt",
+    keywords: ["migration", "git-crypt", "switch", "migrate", "gpg", "transparent"],
+    content:
+      "Step-by-step guide to migrate from git-crypt to xenvsync. Export decrypted files, remove git-crypt configuration, and set up xenvsync.",
+  },
+  {
+    href: "/docs/migration",
+    title: "Migration Guides",
+    section: "Docs",
+    heading: "Feature Comparison",
+    keywords: ["comparison", "compare", "vs", "alternative", "dotenv-vault", "sops", "git-crypt"],
+    content:
+      "Feature comparison table between xenvsync, dotenv-vault, sops, and git-crypt. Covers cloud dependency, in-memory injection, multi-environment, team sharing, key rotation, and more.",
+  },
+
   // Security
   {
     href: "/docs/security",
