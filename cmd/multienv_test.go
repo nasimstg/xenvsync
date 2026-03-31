@@ -17,6 +17,7 @@ func resetAllFlags() {
 	diffEnvFile = defaultEnvFile
 	diffVaultFile = defaultVaultFile
 	diffEnvName = ""
+	diffShowValues = false
 	exportVaultFile = defaultVaultFile
 	exportFormat = "dotenv"
 	exportEnvName = ""
@@ -25,6 +26,9 @@ func resetAllFlags() {
 	statusEnvName = ""
 	rotateEnvName = ""
 	rotateRevoke = ""
+	logEnvName = ""
+	logShowValues = false
+	logLimit = 10
 }
 
 func TestPushPull_NamedEnv(t *testing.T) {

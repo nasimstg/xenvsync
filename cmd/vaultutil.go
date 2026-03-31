@@ -19,7 +19,12 @@ func decryptVault(vaultPath string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot read %s: %w", vaultPath, err)
 	}
+	return decryptVaultBytes(vaultRaw)
+}
 
+// decryptVaultBytes decrypts raw vault data, handling both V1 and V2 formats.
+// This is useful when vault content comes from sources other than a file (e.g., git show).
+func decryptVaultBytes(vaultRaw []byte) ([]byte, error) {
 	if vault.IsV2(vaultRaw) {
 		return decryptV2(vaultRaw)
 	}
