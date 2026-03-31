@@ -20,6 +20,19 @@ export default function Installation() {
         description="Multiple ways to install xenvsync on any platform."
       />
 
+      <Section title="Homebrew (macOS / Linux)">
+        <CodeBlock title="Install via Homebrew" language="bash">
+          {`$ brew install nasimstg/tap/xenvsync`}
+        </CodeBlock>
+      </Section>
+
+      <Section title="Scoop (Windows)">
+        <CodeBlock title="Install via Scoop" language="bash">
+{`$ scoop bucket add nasimstg https://github.com/nasimstg/scoop-bucket
+$ scoop install xenvsync`}
+        </CodeBlock>
+      </Section>
+
       <Section title="npm (Quickest)">
         <CodeBlock title="Install globally" language="bash">
           {`$ npm install -g @nasimstg/xenvsync`}
@@ -87,6 +100,24 @@ $ make build`}
         </p>
       </Section>
 
+      <Section title="Nix Flake">
+        <CodeBlock title="Run with Nix" language="bash">
+{`# Run without installing
+$ nix run github:nasimstg/xenvsync
+
+# Add to your flake inputs
+$ nix profile install github:nasimstg/xenvsync`}
+        </CodeBlock>
+      </Section>
+
+      <Section title="Arch Linux (AUR)">
+        <CodeBlock title="Install from AUR" language="bash">
+{`$ git clone https://aur.archlinux.org/xenvsync.git
+$ cd xenvsync
+$ makepkg -si`}
+        </CodeBlock>
+      </Section>
+
       <Section title="Verify">
         <CodeBlock title="Check version" language="bash">
 {`$ xenvsync version
@@ -120,8 +151,9 @@ xenvsync v0.1.0
           Replace the binary with a newer version. Config files are forward-compatible.
         </p>
         <CodeBlock language="bash">
-{`$ npm update -g xenvsync
-# or
+{`$ brew upgrade xenvsync
+$ scoop update xenvsync
+$ npm update -g @nasimstg/xenvsync
 $ go install github.com/nasimstg/xenvsync@latest`}
         </CodeBlock>
       </Section>

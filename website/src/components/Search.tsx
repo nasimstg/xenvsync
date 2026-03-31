@@ -64,6 +64,15 @@ const searchIndex: SearchEntry[] = [
     href: "/docs/installation",
     title: "Installation",
     section: "Docs",
+    heading: "Homebrew & Scoop",
+    keywords: ["homebrew", "brew", "scoop", "windows", "macos", "linux", "tap", "bucket"],
+    content:
+      "Install via Homebrew on macOS and Linux with brew install nasimstg/tap/xenvsync. Install via Scoop on Windows with scoop bucket add nasimstg and scoop install xenvsync.",
+  },
+  {
+    href: "/docs/installation",
+    title: "Installation",
+    section: "Docs",
     heading: "Go Install",
     keywords: ["install", "go install", "go 1.22", "gopath"],
     content:
@@ -77,6 +86,15 @@ const searchIndex: SearchEntry[] = [
     keywords: ["binary", "release", "download", "linux", "macos", "windows", "deb", "rpm", "tar", "zip"],
     content:
       "Prebuilt binaries available on GitHub Releases for Linux macOS Windows. Package manager support with deb and rpm. Download tar.gz or zip from releases page.",
+  },
+  {
+    href: "/docs/installation",
+    title: "Installation",
+    section: "Docs",
+    heading: "Nix & AUR",
+    keywords: ["nix", "flake", "nixos", "aur", "arch", "linux", "makepkg"],
+    content:
+      "Install with Nix using nix run github:nasimstg/xenvsync or add to your flake inputs. Arch Linux users can build from AUR with makepkg.",
   },
   {
     href: "/docs/installation",
