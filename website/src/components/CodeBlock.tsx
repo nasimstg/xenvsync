@@ -22,9 +22,11 @@ export function CodeBlock({ children, title, language }: CodeBlockProps) {
         </div>
       )}
       <div className="relative">
-        <pre className="!rounded-none !border-0 !m-0">
-          <code>{colorize(children)}</code>
-        </pre>
+        <div className="overflow-x-auto scrollbar-thin">
+          <pre className="!rounded-none !border-0 !m-0">
+            <code>{colorize(children)}</code>
+          </pre>
+        </div>
         <CopyButton text={children} />
       </div>
     </div>

@@ -81,14 +81,16 @@ export function Sidebar() {
         <div className="sticky top-20">{navContent}</div>
       </aside>
 
-      {/* Mobile toggle */}
-      <button
-        className="lg:hidden fixed bottom-4 right-4 z-50 p-3 rounded-full bg-[var(--color-accent)] text-white shadow-lg shadow-[var(--color-accent)]/20"
-        onClick={() => setMobileOpen(true)}
-        aria-label="Open docs menu"
-      >
-        <Menu className="w-5 h-5" />
-      </button>
+      {/* Mobile toggle — hidden when drawer is open */}
+      {!mobileOpen && (
+        <button
+          className="lg:hidden fixed bottom-4 right-4 z-40 p-3 rounded-full bg-[var(--color-accent)] text-white shadow-lg shadow-[var(--color-accent)]/20"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open docs menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      )}
 
       {/* Mobile drawer */}
       <AnimatePresence>

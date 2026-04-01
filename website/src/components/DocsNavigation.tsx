@@ -14,7 +14,7 @@ export function DocsNavigation() {
   if (!prev && !next) return null;
 
   return (
-    <div className="flex items-stretch gap-3 mt-16 pt-8 border-t border-[var(--color-border)]">
+    <div className="flex flex-col sm:flex-row items-stretch gap-3 mt-16 pt-8 border-t border-[var(--color-border)]">
       {prev ? (
         <Link
           href={prev.href}

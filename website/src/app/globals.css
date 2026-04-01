@@ -162,6 +162,13 @@ code {
   animation: blink 1s step-end infinite;
 }
 
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .mesh-gradient { animation: none; }
+  .cursor-blink { animation: none; opacity: 1; }
+  html { scroll-behavior: auto; }
+}
+
 /* Search highlight */
 @keyframes highlight-fade {
   0% { background-color: rgba(6, 182, 212, 0.35); }

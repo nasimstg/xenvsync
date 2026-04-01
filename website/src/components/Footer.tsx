@@ -34,9 +34,9 @@ export function Footer() {
   return (
     <footer className="border-t border-[var(--color-border)] mt-24 bg-[var(--color-bg-card)]/50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-1 sm:col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 font-bold text-sm">
               <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-purple)] flex items-center justify-center">
                 <Terminal className="w-3 h-3 text-white" />
