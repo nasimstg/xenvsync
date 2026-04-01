@@ -28,6 +28,9 @@ import {
   Layers,
   Binary,
   ChevronDown,
+  Users,
+  RotateCcw,
+  Stethoscope,
 } from "lucide-react";
 
 export default function Home() {
@@ -62,9 +65,10 @@ export default function Home() {
           <AnimateOnScroll delay={0.2}>
             <p className="mt-5 text-base sm:text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto leading-relaxed">
               A blazing-fast CLI that encrypts environment variables with{" "}
-              <strong className="text-[var(--color-text)]">AES-256-GCM</strong> and
-              injects them in-memory &mdash; so you can commit secrets to Git without
-              a cloud service.
+              <strong className="text-[var(--color-text)]">AES-256-GCM</strong>,
+              shares them with your team via{" "}
+              <strong className="text-[var(--color-text)]">X25519 key exchange</strong>,
+              and injects them in-memory &mdash; no cloud service required.
             </p>
           </AnimateOnScroll>
 
@@ -94,10 +98,10 @@ export default function Home() {
           <AnimateOnScroll delay={0.4}>
             <div className="mt-8 max-w-md mx-auto">
               <CodeBlock>
-                {`$ npm install -g @nasimstg/xenvsync`}
+                {`$ brew install nasimstg/tap/xenvsync`}
               </CodeBlock>
               <p className="text-xs text-[var(--color-text-muted)] mt-2">
-                or <code>npx @nasimstg/xenvsync</code> · <code>go install github.com/nasimstg/xenvsync@latest</code>
+                or <code>npm i -g @nasimstg/xenvsync</code> · <code>scoop install xenvsync</code> · <code>go install github.com/nasimstg/xenvsync@latest</code>
               </p>
             </div>
           </AnimateOnScroll>
@@ -194,12 +198,13 @@ export default function Home() {
                 <div className="w-10 h-10 rounded-xl bg-[var(--color-accent-glow-strong)] border border-[var(--color-accent-dim)]/30 flex items-center justify-center">
                   <Shield className="w-5 h-5 text-[var(--color-accent)]" />
                 </div>
-                <h3 className="font-semibold text-lg">AES-256-GCM Encryption</h3>
+                <h3 className="font-semibold text-lg">AES-256-GCM + X25519 Key Exchange</h3>
               </div>
               <p className="text-sm text-[var(--color-text-muted)] leading-relaxed">
                 Uses Go&apos;s standard <code>crypto/aes</code> with authenticated encryption.
                 Every push generates a fresh random nonce, so identical plaintext always
-                produces different ciphertext. Tamper detection is built into the GCM auth tag.
+                produces different ciphertext. Team sharing uses X25519 ECDH with per-member
+                ephemeral key slots — no shared symmetric key needed.
               </p>
               <div className="mt-4 p-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] font-mono text-xs text-[var(--color-text-muted)]">
                 [nonce 12B] ‖ [ciphertext] ‖ [GCM tag 16B] → base64 → .env.vault
@@ -215,7 +220,31 @@ export default function Home() {
             />
           </AnimateOnScroll>
 
+          <AnimateOnScroll delay={0.12}>
+            <BentoCard
+              icon={<Users className="w-5 h-5" />}
+              title="Team Sharing"
+              desc="X25519 keypairs let each member decrypt with their own private key. No shared secrets to distribute."
+            />
+          </AnimateOnScroll>
+
           <AnimateOnScroll delay={0.15}>
+            <BentoCard
+              icon={<Layers className="w-5 h-5" />}
+              title="Multi-Environment"
+              desc="Push and pull named environments — staging, production, ci. Merge .env.shared < .env.staging < .env.local."
+            />
+          </AnimateOnScroll>
+
+          <AnimateOnScroll delay={0.18}>
+            <BentoCard
+              icon={<RotateCcw className="w-5 h-5" />}
+              title="Key Rotation & Revoke"
+              desc="Rotate encryption keys and revoke team members atomically. Fresh ephemeral keys on every rotation."
+            />
+          </AnimateOnScroll>
+
+          <AnimateOnScroll delay={0.2}>
             <BentoCard
               icon={<Binary className="w-5 h-5" />}
               title="Single Binary"
@@ -223,19 +252,19 @@ export default function Home() {
             />
           </AnimateOnScroll>
 
-          <AnimateOnScroll delay={0.2}>
+          <AnimateOnScroll delay={0.22}>
             <BentoCard
               icon={<GitBranch className="w-5 h-5" />}
-              title="Git-Friendly Vaults"
-              desc="Base64 with header/footer markers and 76-char line wrapping. Vault diffs stay readable."
+              title="Audit Log & Diff"
+              desc="Track vault changes over time from Git history. Diff shows which keys changed without exposing values."
             />
           </AnimateOnScroll>
 
           <AnimateOnScroll delay={0.25}>
             <BentoCard
-              icon={<Layers className="w-5 h-5" />}
-              title="Diff & Status"
-              desc="Preview what changed before pushing or pulling. See timestamps, permissions, and sync direction."
+              icon={<Stethoscope className="w-5 h-5" />}
+              title="Doctor & Verify"
+              desc="Audit permissions, gitignore, key strength, and vault integrity. Pre-commit hook blocks stale vaults."
             />
           </AnimateOnScroll>
         </div>
@@ -270,11 +299,13 @@ export default function Home() {
               <tbody className="divide-y divide-[var(--color-border)]">
                 {[
                   ["No cloud account", true, false, true, true],
-                  ["Encrypts only .env", true, true, false, true],
                   ["In-memory injection", true, false, false, false],
+                  ["Team sharing (asymmetric)", true, false, false, true],
+                  ["Multi-environment", true, true, false, false],
+                  ["Key rotation & revoke", true, false, false, false],
+                  ["Diff / audit log", true, false, false, true],
                   ["Single binary, zero deps", true, false, false, false],
-                  ["Diff / status preview", true, false, false, true],
-                  ["Standard crypto (AES-256)", true, true, true, true],
+                  ["Passphrase-protected keys", true, false, false, false],
                 ].map(([feature, ...vals], i) => (
                   <tr key={i} className="hover:bg-[var(--color-bg-card)] transition-colors">
                     <td className="px-5 py-3 font-medium">{feature as string}</td>
@@ -292,6 +323,12 @@ export default function Home() {
               </tbody>
             </table>
           </div>
+          <p className="text-center text-xs text-[var(--color-text-muted)] mt-3">
+            <Link href="/docs/migration" className="text-[var(--color-accent)] hover:underline">
+              Migration guides
+            </Link>{" "}
+            available for dotenv-vault, sops, and git-crypt.
+          </p>
         </AnimateOnScroll>
       </section>
 
@@ -307,7 +344,7 @@ export default function Home() {
         </AnimateOnScroll>
 
         <AnimateOnScroll>
-          <CodeBlock title="Complete workflow" language="bash">
+          <CodeBlock title="Solo workflow" language="bash">
 {`# 1. Initialize — generates key + updates .gitignore
 $ xenvsync init
 
@@ -321,6 +358,25 @@ $ xenvsync pull
 # 4. Or inject secrets in-memory (no .env written)
 $ xenvsync run -- npm start`}
           </CodeBlock>
+        </AnimateOnScroll>
+
+        <AnimateOnScroll delay={0.1}>
+          <div className="mt-6">
+            <CodeBlock title="Team workflow (V2 vault)" language="bash">
+{`# Each member generates their identity once
+$ xenvsync keygen
+
+# Project lead adds team members
+$ xenvsync team add alice <alice-public-key>
+$ xenvsync team add bob <bob-public-key>
+
+# Push auto-encrypts for all team members
+$ xenvsync push    # creates V2 vault with per-member key slots
+
+# Each member decrypts with their own private key
+$ xenvsync pull    # uses ~/.xenvsync/identity`}
+            </CodeBlock>
+          </div>
         </AnimateOnScroll>
       </section>
 
@@ -339,23 +395,31 @@ $ xenvsync run -- npm start`}
           {[
             {
               q: "How is this different from dotenv-vault?",
-              a: "xenvsync works 100% offline. No cloud account, no third-party service. Your key never leaves your machine. It also supports in-memory injection with the `run` command, which dotenv-vault doesn't offer.",
+              a: "xenvsync works 100% offline. No cloud account, no third-party service. Your key never leaves your machine. It also supports in-memory injection, team sharing via X25519 key exchange, key rotation, and audit logging — features dotenv-vault doesn't offer.",
             },
             {
               q: "Is it safe to commit .env.vault to Git?",
-              a: "Yes. The vault is encrypted with AES-256-GCM. Without the key file (.xenvsync.key), the ciphertext is cryptographically indistinguishable from random data. The key is auto-added to .gitignore.",
+              a: "Yes. The vault is encrypted with AES-256-GCM. Without the key file (.xenvsync.key) or your X25519 private key, the ciphertext is cryptographically indistinguishable from random data. The key is auto-added to .gitignore.",
             },
             {
-              q: "How do I share the key with teammates?",
-              a: "In V1, share the .xenvsync.key file through a secure channel (password manager, encrypted message, etc.). V2 will introduce public-key cryptography so teammates can decrypt with their own private keys.",
+              q: "How do I share secrets with teammates?",
+              a: "Each team member runs `xenvsync keygen` to create their X25519 keypair, then shares their public key. The project lead adds members with `team add`. When you push, the vault is encrypted individually for each member — no shared symmetric key needed.",
+            },
+            {
+              q: "What if a team member leaves?",
+              a: "Run `xenvsync rotate --revoke <name>` to remove the member from the roster and re-encrypt the vault in one atomic step. They can no longer decrypt the vault, even with a copy of the old file.",
             },
             {
               q: "Does it work with Docker?",
-              a: "Yes. Use `xenvsync run -- docker compose up` to inject secrets into Docker processes. The secrets exist only in the process environment, not in any file.",
+              a: "Yes. Use `xenvsync run -- docker compose up` to inject secrets into Docker processes, or use the init-container pattern from examples/docker/. Secrets exist only in process memory, not in any file.",
             },
             {
               q: "What happens if someone tampers with the vault?",
-              a: "GCM provides authenticated encryption. Any modification to the ciphertext — even a single bit flip — will cause decryption to fail with an authentication error. You'll know immediately.",
+              a: "GCM provides authenticated encryption. Any modification — even a single bit flip — causes decryption to fail. Run `xenvsync verify` to check vault integrity, or use the pre-commit hook to block stale vaults automatically.",
+            },
+            {
+              q: "Can I protect the key file with a passphrase?",
+              a: "Yes. Run `xenvsync init --passphrase` to encrypt the key file with scrypt + AES-256-GCM. Set the XENVSYNC_PASSPHRASE environment variable to decrypt it during operations.",
             },
           ].map((faq, i) => (
             <AnimateOnScroll key={i} delay={i * 0.05}>

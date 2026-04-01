@@ -23,10 +23,11 @@ export default function Security() {
       <Section title="Overview">
         <GlassCard>
           <p className="text-[var(--color-text-secondary)] leading-relaxed">
-            xenvsync uses <strong className="text-[var(--color-text)]">AES-256-GCM</strong> (Galois/Counter Mode),
-            an authenticated encryption algorithm from Go&apos;s standard{" "}
-            <code>crypto/aes</code> and <code>crypto/cipher</code> packages. No
-            third-party cryptography libraries are used.
+            xenvsync uses <strong className="text-[var(--color-text)]">AES-256-GCM</strong> for vault encryption
+            and <strong className="text-[var(--color-text)]">X25519 ECDH</strong> for team key exchange.
+            All cryptography uses Go&apos;s standard <code>crypto/aes</code>,{" "}
+            <code>crypto/cipher</code>, and <code>golang.org/x/crypto/curve25519</code> packages.
+            No third-party cryptography libraries are used.
           </p>
         </GlassCard>
       </Section>
@@ -41,7 +42,9 @@ export default function Security() {
               <PropertyRow property="Nonce size" value="96 bits (12 bytes), fresh random nonce per encryption" />
               <PropertyRow property="Auth tag" value="128 bits (16 bytes), appended by GCM — detects any tampering" />
               <PropertyRow property="Ciphertext layout" value="[nonce (12 B) ‖ ciphertext ‖ GCM tag (16 B)]" />
-              <PropertyRow property="Vault format" value="Base64 with header/footer markers, 76-char line wrapping" />
+              <PropertyRow property="V1 vault format" value="Base64 with header/footer markers, 76-char line wrapping" />
+              <PropertyRow property="V2 vault format" value="JSON key slots + base64 ciphertext; per-member ephemeral X25519 key exchange" />
+              <PropertyRow property="Key exchange" value="X25519 ECDH shared secret → SHA-256 → AES-GCM key wrapping (V2 team mode)" />
             </tbody>
           </table>
         </div>
@@ -86,13 +89,13 @@ export default function Security() {
           <Card glow>
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-5 h-5 text-[var(--color-accent)]" />
-              <h3 className="font-medium">Sharing</h3>
+              <h3 className="font-medium">Sharing (V2)</h3>
             </div>
             <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
-              In V1, the symmetric key must be shared out-of-band (secure
-              messaging, password manager, etc.). V2 introduces X25519 asymmetric
-              keypairs (<code>keygen</code> / <code>whoami</code>) as the
-              foundation for zero-trust team sharing.
+              Each team member generates an X25519 keypair (<code>keygen</code>).
+              The vault is encrypted per-member using ECDH key exchange with
+              ephemeral keys — no shared symmetric key leaves any machine.
+              Members are managed via <code>team add/remove</code>.
             </p>
           </Card>
         </div>
@@ -174,6 +177,66 @@ export default function Security() {
         </ul>
       </Section>
 
+      <Section title="Passphrase Protection">
+        <p className="text-[var(--color-text-secondary)] leading-relaxed mb-4">
+          Key files can optionally be encrypted with a passphrase using a
+          key-encryption-key pattern:
+        </p>
+        <div className="overflow-x-auto rounded-xl border border-[var(--color-border)]">
+          <table className="w-full text-sm">
+            <tbody className="divide-y divide-[var(--color-border)]">
+              <PropertyRow property="KDF" value="scrypt (N=32768, r=8, p=1)" />
+              <PropertyRow property="Salt" value="16 random bytes per encryption" />
+              <PropertyRow property="Cipher" value="AES-256-GCM wrapping the raw key" />
+              <PropertyRow property="Format" value="enc: prefix + hex(salt ‖ nonce ‖ ciphertext+tag)" />
+            </tbody>
+          </table>
+        </div>
+        <Callout>
+          Enable with <code>xenvsync init --passphrase</code>. Set{" "}
+          <code>XENVSYNC_PASSPHRASE</code> for automated workflows.
+        </Callout>
+      </Section>
+
+      <Section title="Memory Zeroing">
+        <p className="text-[var(--color-text-secondary)] leading-relaxed">
+          Key material is zeroed in memory after use. Raw hex key data is
+          cleared immediately after decoding, and symmetric keys are zeroed
+          via <code>defer</code> after decryption operations complete. This
+          reduces the window where secrets exist in process memory.
+        </p>
+      </Section>
+
+      <Section title="Key Rotation">
+        <p className="text-[var(--color-text-secondary)] leading-relaxed mb-4">
+          The <code>xenvsync rotate</code> command re-encrypts the vault atomically:
+        </p>
+        <ul className="space-y-2">
+          <li className="flex items-start gap-3 text-[var(--color-text-secondary)]">
+            <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0" />
+            <span>
+              <strong className="text-[var(--color-text)]">V1 mode</strong> —
+              generates a new symmetric key and re-encrypts (old key file is
+              replaced only after encryption succeeds)
+            </span>
+          </li>
+          <li className="flex items-start gap-3 text-[var(--color-text-secondary)]">
+            <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0" />
+            <span>
+              <strong className="text-[var(--color-text)]">V2 mode</strong> —
+              re-encrypts with fresh ephemeral keys for all roster members
+            </span>
+          </li>
+          <li className="flex items-start gap-3 text-[var(--color-text-secondary)]">
+            <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0" />
+            <span>
+              <strong className="text-[var(--color-text)]">--revoke</strong> —
+              removes a member and rotates in one atomic step
+            </span>
+          </li>
+        </ul>
+      </Section>
+
       <Section title="Threat Model">
         <div className="overflow-x-auto rounded-xl border border-[var(--color-border)] glow-sm">
           <table className="w-full text-sm">
@@ -189,6 +252,9 @@ export default function Security() {
               <ThreatRow threat="Vault file tampered" mitigation="GCM authentication tag rejects modified ciphertext" />
               <ThreatRow threat="Plaintext .env on disk" mitigation="Use `run` command for in-memory injection instead" />
               <ThreatRow threat="Weak encryption key" mitigation="256-bit key from OS CSPRNG; validated on decode" />
+              <ThreatRow threat="Team member leaves" mitigation="rotate --revoke removes member and re-encrypts atomically" />
+              <ThreatRow threat="Key file stolen" mitigation="Optional passphrase protection (scrypt + AES-GCM)" />
+              <ThreatRow threat="Key in process memory" mitigation="Memory zeroed after use via crypto.ZeroBytes" />
             </tbody>
           </table>
         </div>

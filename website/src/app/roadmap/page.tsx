@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { AnimateOnScroll } from "@/components/AnimateOnScroll";
 import {
   CheckCircle2,
-  Circle,
   Sparkles,
   Layers,
   Lock,
@@ -176,8 +175,8 @@ export default function RoadmapPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <span className="gradient-text">What&apos;s next.</span>{" "}
-            What we&apos;ve built.
+            <span className="gradient-text">Built &amp; shipped.</span>{" "}
+            All 12 phases complete.
           </motion.h1>
 
           <motion.p
@@ -186,8 +185,8 @@ export default function RoadmapPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            V2 transforms xenvsync from a single-user tool into a zero-trust
-            secrets manager for teams and automated pipelines.
+            From single-user encryption to zero-trust team secrets management —
+            xenvsync v1.11.0 delivers the complete vision across 12 phases.
           </motion.p>
 
           <motion.div
@@ -196,44 +195,44 @@ export default function RoadmapPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.35 }}
           >
-            <Stat label="V2 Phases" value="5 planned" />
+            <Stat label="V2 Phases" value="5 / 5" accent />
             <StatDivider />
             <Stat label="V1 Phases" value="7 / 7" accent />
             <StatDivider />
-            <Stat label="Tests" value="38+" />
+            <Stat label="Tests" value="60+" />
           </motion.div>
         </div>
       </section>
 
-      {/* ============ V2 TIMELINE (PLANNED — TOP) ============ */}
+      {/* ============ V2 TIMELINE (COMPLETE — TOP) ============ */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
         <AnimateOnScroll>
           <div className="flex items-center gap-3 mb-3">
             <h2 className="text-2xl sm:text-3xl font-bold">V2 — Collaboration & Scale</h2>
-            <span className="text-xs px-3 py-1 rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/30 font-medium">
-              Planned
+            <span className="text-xs px-3 py-1 rounded-full bg-[var(--color-green)]/10 text-[var(--color-green)] border border-[var(--color-green)]/30 font-medium">
+              Complete
             </span>
           </div>
           <p className="text-[var(--color-text-secondary)] mb-10 max-w-2xl">
-            The next evolution — asymmetric cryptography, multi-environment support,
-            CI/CD integrations, and an extensible plugin system.
+            Asymmetric cryptography, multi-environment support, CI/CD integrations,
+            hardening, and an extensible ecosystem — all shipped.
           </p>
         </AnimateOnScroll>
 
         <div className="relative">
-          <div className="absolute left-[19px] top-2 bottom-2 w-px bg-gradient-to-b from-[var(--color-accent)] via-[var(--color-accent)]/30 to-transparent hidden sm:block" />
+          <div className="absolute left-[19px] top-2 bottom-2 w-px bg-gradient-to-b from-[var(--color-green)] via-[var(--color-green)]/40 to-transparent hidden sm:block" />
 
           <div className="space-y-8">
             {v2Phases.map((phase, i) => (
               <AnimateOnScroll key={phase.name} delay={i * 0.06}>
                 <div className="flex gap-5">
-                  <div className="hidden sm:flex shrink-0 w-10 h-10 rounded-full bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/30 items-center justify-center text-[var(--color-accent)] z-10">
-                    <Circle className="w-4 h-4" />
+                  <div className="hidden sm:flex shrink-0 w-10 h-10 rounded-full bg-[var(--color-green)]/10 border border-[var(--color-green)]/30 items-center justify-center text-[var(--color-green)] z-10">
+                    <CheckCircle2 className="w-4 h-4" />
                   </div>
 
                   <div className="flex-1 gradient-border p-5 glow-sm hover:glow-md transition-shadow">
                     <div className="flex items-center gap-2.5 mb-1.5">
-                      <span className="text-[var(--color-accent)]">{phase.icon}</span>
+                      <span className="text-[var(--color-green)]">{phase.icon}</span>
                       <h3 className="font-semibold">{phase.name}</h3>
                     </div>
                     <p className="text-sm text-[var(--color-text-muted)] mb-3 ml-7">
@@ -242,7 +241,7 @@ export default function RoadmapPage() {
                     <ul className="space-y-1.5 ml-7">
                       {phase.items.map((item, j) => (
                         <li key={j} className="text-sm text-[var(--color-text-secondary)] flex items-start gap-2">
-                          <span className="mt-1 w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0" />
+                          <span className="text-[var(--color-green)] mt-0.5 shrink-0">&#10003;</span>
                           {item}
                         </li>
                       ))}
@@ -264,11 +263,11 @@ export default function RoadmapPage() {
           <AnimateOnScroll>
             <Sparkles className="w-8 h-8 text-[var(--color-accent)] mx-auto mb-4" />
             <h2 className="text-2xl sm:text-3xl font-bold mb-3">
-              Want to help shape V2?
+              What should we build next?
             </h2>
             <p className="text-[var(--color-text-secondary)] mb-8 max-w-lg mx-auto">
-              We welcome contributions, feature requests, and feedback. Check out
-              our open issues or start a discussion.
+              All 12 phases are shipped. We welcome contributions, feature requests,
+              and feedback to shape what comes next.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a
