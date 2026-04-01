@@ -186,7 +186,7 @@ export default function RoadmapPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             From single-user encryption to zero-trust team secrets management —
-            xenvsync v1.11.0 delivers the complete vision across 12 phases.
+            xenvsync v1.12.0 delivers the complete vision across 12 phases.
           </motion.p>
 
           <motion.div

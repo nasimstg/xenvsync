@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.12.0] - 2026-04-01
+
+### Security
+- Fix shell injection in `export --format=shell` — switched from Go `%q` (allows `$()` expansion) to single-quote escaping
+- Fix path traversal via `--env` flag — validate environment names contain no slashes or `..`
+- Fix V2 vault separator collision — data separator now searched after header, not globally
+
+### Fixed
+- Fix `rotate` writing key before vault — vault is now written first so old key still works on failure
+- Fix `doctor` falsely failing on passphrase-protected keys (`enc:` prefix)
+- Fix pre-commit hook not blocking stale vaults (`verify` only warns on staleness)
+- Fix Docker/CI examples using `XENVSYNC_KEY` env var instead of key file mount
+- Fix GitLab CI template deleting key in `before_script` before `script` runs
+- Fix `entrypoint.sh` using unsafe `eval` on shell export — now uses `xenvsync run`
+- Fix migration guide deleting `.env.vault` before `git add`
+- Fix YAML export missing YAML 1.1 boolean quoting (`yes`, `no`, `on`, `off`)
+
+### Improved
+- Website: responsive prev/next navigation (stacks on mobile)
+- Website: sidebar FAB hidden when drawer is open
+- Website: single-column footer on small screens
+- Website: smoother hero text scaling across breakpoints
+- Website: `prefers-reduced-motion` support for all animations
+- Website: breadcrumb truncation on narrow screens
+- Website: roadmap updated to show all 12 phases complete
+
 ## [v1.11.0] - 2026-04-01
 
 ### Added
