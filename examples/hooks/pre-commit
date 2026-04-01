@@ -28,6 +28,16 @@ if ! xenvsync verify 2>&1; then
     exit 1
 fi
 
+# Explicit stale vault check (verify only warns, doesn't fail on staleness).
+if [ -f ".env" ] && [ -f ".env.vault" ]; then
+    if [ ".env" -nt ".env.vault" ]; then
+        echo ""
+        echo "xenvsync: .env is newer than .env.vault — vault is stale."
+        echo "Run 'xenvsync push' to update the vault, then try again."
+        exit 1
+    fi
+fi
+
 # Check if .env is staged (it should not be committed).
 if git diff --cached --name-only | grep -q '^\.env$'; then
     echo ""

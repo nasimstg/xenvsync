@@ -50,7 +50,10 @@ func runLog(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("xenvsync log requires a Git repository")
 	}
 
-	envName := resolveEnvName(logEnvName)
+	envName, err := resolveEnvName(logEnvName)
+	if err != nil {
+		return err
+	}
 	vFile := defaultVaultFile
 	if envName != "" {
 		vFile = vaultFilePath(envName)

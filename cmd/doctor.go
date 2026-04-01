@@ -34,7 +34,10 @@ type checkResult struct {
 }
 
 func runDoctor(cmd *cobra.Command, args []string) error {
-	envName := resolveEnvName(doctorEnvName)
+	envName, err := resolveEnvName(doctorEnvName)
+	if err != nil {
+		return err
+	}
 
 	eFile := defaultEnvFile
 	vFile := defaultVaultFile
@@ -139,6 +142,12 @@ func checkKeyStrength() checkResult {
 	}
 
 	keyHex := strings.TrimSpace(string(raw))
+
+	// Passphrase-protected keys (enc: prefix) are already encrypted — skip hex strength check.
+	if strings.HasPrefix(keyHex, "enc:") {
+		return checkResult{"pass", "Key strength: passphrase-protected"}
+	}
+
 	keyBytes, err := hex.DecodeString(keyHex)
 	if err != nil {
 		return checkResult{"fail", "Key strength: invalid hex encoding"}

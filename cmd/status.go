@@ -28,7 +28,10 @@ func init() {
 }
 
 func runStatus(cmd *cobra.Command, args []string) error {
-	envName := resolveEnvName(statusEnvName)
+	envName, err := resolveEnvName(statusEnvName)
+	if err != nil {
+		return err
+	}
 
 	eFile := defaultEnvFile
 	vFile := defaultVaultFile

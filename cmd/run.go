@@ -47,7 +47,10 @@ func runRun(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("no command specified — usage: xenvsync run -- <command> [args...]")
 	}
 
-	envName := resolveEnvName(runEnvName)
+	envName, err := resolveEnvName(runEnvName)
+	if err != nil {
+		return err
+	}
 
 	vFile := runVaultFile
 	if envName != "" && vFile == defaultVaultFile {

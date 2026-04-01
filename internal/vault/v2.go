@@ -63,15 +63,26 @@ func DecodeV2(data []byte) (*V2Vault, error) {
 	content := string(data)
 
 	hIdx := strings.Index(content, headerV2)
-	dIdx := strings.Index(content, dataSep)
-	fIdx := strings.Index(content, footer)
-
-	if hIdx < 0 || dIdx < 0 || fIdx < 0 || dIdx <= hIdx || fIdx <= dIdx {
-		return nil, fmt.Errorf("malformed V2 vault structure")
+	if hIdx < 0 {
+		return nil, fmt.Errorf("malformed V2 vault structure: missing header")
 	}
 
+	// Find the data separator AFTER the header to avoid matching inside slots JSON.
+	afterHeader := hIdx + len(headerV2)
+	dRel := strings.Index(content[afterHeader:], dataSep)
+	if dRel < 0 {
+		return nil, fmt.Errorf("malformed V2 vault structure: missing data separator")
+	}
+	dIdx := afterHeader + dRel
+
+	fIdx := strings.Index(content[dIdx:], footer)
+	if fIdx < 0 {
+		return nil, fmt.Errorf("malformed V2 vault structure: missing footer")
+	}
+	fIdx += dIdx
+
 	// Parse key slots (JSON between header and data separator).
-	slotsRaw := strings.TrimSpace(content[hIdx+len(headerV2) : dIdx])
+	slotsRaw := strings.TrimSpace(content[afterHeader:dIdx])
 	var slots []KeySlot
 	if err := json.Unmarshal([]byte(slotsRaw), &slots); err != nil {
 		return nil, fmt.Errorf("invalid key slots JSON: %w", err)

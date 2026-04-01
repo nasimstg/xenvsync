@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -29,11 +30,16 @@ func vaultFilePath(name string) string {
 
 // resolveEnvName returns the effective environment name by checking
 // the --env flag value first, then the XENVSYNC_ENV environment variable.
-func resolveEnvName(flagValue string) string {
-	if flagValue != "" {
-		return flagValue
+// It validates that the name is safe (no path traversal).
+func resolveEnvName(flagValue string) (string, error) {
+	name := flagValue
+	if name == "" {
+		name = os.Getenv("XENVSYNC_ENV")
 	}
-	return os.Getenv("XENVSYNC_ENV")
+	if name != "" && (strings.Contains(name, "/") || strings.Contains(name, "\\") || strings.Contains(name, "..")) {
+		return "", fmt.Errorf("invalid environment name %q: must not contain path separators or '..'", name)
+	}
+	return name, nil
 }
 
 // discoverEnvironments scans the current directory for .env.* and .env.*.vault

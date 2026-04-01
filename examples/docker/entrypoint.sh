@@ -10,10 +10,10 @@
 
 set -e
 
-# Decrypt and export all variables from the vault.
+# Decrypt and inject secrets via xenvsync run (safer than eval).
 if [ -f ".env.vault" ] && command -v xenvsync >/dev/null 2>&1; then
   echo "xenvsync: decrypting vault..."
-  eval "$(xenvsync export --format=shell)"
+  exec xenvsync run -- "$@"
 fi
 
 # Execute the main command.

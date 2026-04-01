@@ -53,14 +53,13 @@ xenvsync verify`}
 
         <h3 className="text-base font-medium mt-6 mb-2">3. Clean up dotenv-vault</h3>
         <CodeBlock language="bash">
-{`# Remove dotenv-vault artifacts
-rm -f .env.vault  # (the old dotenv-vault format, now replaced by xenvsync's)
+{`# Remove dotenv-vault artifacts (keep .env.vault — xenvsync already overwrote it)
 rm -f .env.keys
 
 # Remove dotenv-vault from dependencies
 npm uninstall dotenv-vault
 
-# Commit the new vault
+# Commit the new xenvsync vault
 git add .env.vault .gitignore
 git commit -m "Migrate from dotenv-vault to xenvsync"`}
         </CodeBlock>

@@ -46,7 +46,10 @@ func init() {
 }
 
 func runExport(cmd *cobra.Command, args []string) error {
-	envName := resolveEnvName(exportEnvName)
+	envName, err := resolveEnvName(exportEnvName)
+	if err != nil {
+		return err
+	}
 
 	vFile := exportVaultFile
 	if envName != "" && vFile == defaultVaultFile {
@@ -108,6 +111,12 @@ func needsYAMLQuoting(s string) bool {
 	if s == "" || s == "true" || s == "false" || s == "null" || s == "~" {
 		return true
 	}
+	// YAML 1.1 booleans and null aliases
+	lower := strings.ToLower(s)
+	switch lower {
+	case "yes", "no", "on", "off", "y", "n":
+		return true
+	}
 	if strings.ContainsAny(s, ": \t\n\"'#{}[]|>&!%@`,?") {
 		return true
 	}
@@ -117,9 +126,15 @@ func needsYAMLQuoting(s string) bool {
 	return false
 }
 
+// shellQuote wraps a value in single quotes with proper escaping.
+// Single quotes prevent all shell expansion ($, `, etc).
+func shellQuote(s string) string {
+	return "'" + strings.ReplaceAll(s, "'", "'\"'\"'") + "'"
+}
+
 func formatShell(pairs []env.Pair) error {
 	for _, p := range pairs {
-		if _, err := fmt.Fprintf(os.Stdout, "export %s=%q\n", p.Key, p.Value); err != nil {
+		if _, err := fmt.Fprintf(os.Stdout, "export %s=%s\n", p.Key, shellQuote(p.Value)); err != nil {
 			return err
 		}
 	}

@@ -36,7 +36,10 @@ func init() {
 }
 
 func runPull(cmd *cobra.Command, args []string) error {
-	envName := resolveEnvName(pullEnvName)
+	envName, err := resolveEnvName(pullEnvName)
+	if err != nil {
+		return err
+	}
 
 	srcFile := pullVaultFile
 	dstFile := pullEnvFile

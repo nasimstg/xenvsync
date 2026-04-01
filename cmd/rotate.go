@@ -38,7 +38,10 @@ func init() {
 }
 
 func runRotate(cmd *cobra.Command, args []string) error {
-	envName := resolveEnvName(rotateEnvName)
+	envName, err := resolveEnvName(rotateEnvName)
+	if err != nil {
+		return err
+	}
 
 	vFile := defaultVaultFile
 	if envName != "" {
@@ -103,20 +106,26 @@ func runRotate(cmd *cobra.Command, args []string) error {
 			return fmt.Errorf("encryption failed: %w", err)
 		}
 
-		// Write new vault first (atomic: if this fails, old key still works).
 		vaultData = vault.Encode(ciphertext)
 
-		// Write the new key only after vault is successfully encrypted.
+		// Write vault FIRST — if this fails, the old key still works.
+		if err := os.WriteFile(vFile, vaultData, 0644); err != nil {
+			return fmt.Errorf("failed to write %s: %w", vFile, err)
+		}
+
+		// Write the new key only after vault is successfully written.
 		if err := os.WriteFile(keyFile, []byte(newKeyHex), 0600); err != nil {
-			return fmt.Errorf("failed to write new key: %w", err)
+			return fmt.Errorf("failed to write new key (vault already re-encrypted — restore from git): %w", err)
 		}
 		fmt.Printf("Rotated key → %s (mode 0600)\n", keyFile)
 		fmt.Printf("Rotated vault → %s\n", vFile)
 	}
 
-	// 4. Write the new vault.
-	if err := os.WriteFile(vFile, vaultData, 0644); err != nil {
-		return fmt.Errorf("failed to write %s: %w", vFile, err)
+	// 4. Write V2 vault (V1 vault already written above).
+	if len(roster.Members) > 0 {
+		if err := os.WriteFile(vFile, vaultData, 0644); err != nil {
+			return fmt.Errorf("failed to write %s: %w", vFile, err)
+		}
 	}
 
 	fmt.Printf("\nRotation complete. %d variable(s) re-encrypted.\n", len(pairs))

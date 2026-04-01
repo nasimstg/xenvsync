@@ -39,7 +39,10 @@ func init() {
 }
 
 func runDiff(cmd *cobra.Command, args []string) error {
-	envName := resolveEnvName(diffEnvName)
+	envName, err := resolveEnvName(diffEnvName)
+	if err != nil {
+		return err
+	}
 
 	eFile := diffEnvFile
 	vFile := diffVaultFile

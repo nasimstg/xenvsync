@@ -15,11 +15,11 @@ stages:
       # Install xenvsync
       curl -fsSL "https://github.com/nasimstg/xenvsync/releases/latest/download/xenvsync_$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | grep -o '"tag_name":"[^"]*' | cut -d'"' -f4 | sed 's/v//')_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
     - |
-      # Write key and decrypt
+      # Write key file from CI variable
       echo "$XENVSYNC_KEY" > .xenvsync.key
       chmod 600 .xenvsync.key
-      xenvsync pull
-      rm .xenvsync.key
+  after_script:
+    - rm -f .xenvsync.key
 
 build:
   stage: build

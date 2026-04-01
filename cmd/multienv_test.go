@@ -178,11 +178,11 @@ func TestEnvFilePath(t *testing.T) {
 func TestResolveEnvName_FlagOverridesEnvVar(t *testing.T) {
 	t.Setenv("XENVSYNC_ENV", "from-env")
 
-	if got := resolveEnvName("from-flag"); got != "from-flag" {
+	if got, _ := resolveEnvName("from-flag"); got != "from-flag" {
 		t.Errorf("flag should override env var, got %q", got)
 	}
 
-	if got := resolveEnvName(""); got != "from-env" {
+	if got, _ := resolveEnvName(""); got != "from-env" {
 		t.Errorf("should fall back to XENVSYNC_ENV, got %q", got)
 	}
 }

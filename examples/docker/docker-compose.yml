@@ -1,18 +1,18 @@
 # Example docker-compose.yml using xenvsync for secret injection.
 #
 # Usage:
-#   1. Set XENVSYNC_KEY in your shell or .env file (NOT .env.vault)
+#   1. Ensure .xenvsync.key exists in the project root
 #   2. docker compose up
 #
-# The .env.vault is mounted into the container and decrypted at runtime.
+# The .env.vault and .xenvsync.key are mounted into the container at runtime.
+# The key file is mounted read-only and never baked into the image.
 
 services:
   app:
     build: .
     volumes:
       - ../../.env.vault:/app/.env.vault:ro
-    environment:
-      - XENVSYNC_KEY=${XENVSYNC_KEY}
+      - ../../.xenvsync.key:/app/.xenvsync.key:ro
     entrypoint: ["xenvsync", "run", "--"]
     command: ["node", "server.js"]
 
@@ -22,9 +22,8 @@ services:
     image: ghcr.io/nasimstg/xenvsync:latest
     volumes:
       - ../../.env.vault:/app/.env.vault:ro
+      - ../../.xenvsync.key:/app/.xenvsync.key:ro
       - secrets:/app/output
-    environment:
-      - XENVSYNC_KEY=${XENVSYNC_KEY}
     command: ["pull", "--vault", "/app/.env.vault", "--out", "/app/output/.env"]
 
   legacy-app:

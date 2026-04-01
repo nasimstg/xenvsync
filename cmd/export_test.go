@@ -82,7 +82,7 @@ func TestExport_AllFormats(t *testing.T) {
 			{
 				name: "shell",
 				check: func(t *testing.T, out string) {
-					if !strings.Contains(out, `export DB_HOST="localhost"`) {
+					if !strings.Contains(out, `export DB_HOST='localhost'`) {
 						t.Fatal("shell missing DB_HOST")
 					}
 				},

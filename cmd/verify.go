@@ -34,7 +34,10 @@ func init() {
 }
 
 func runVerify(cmd *cobra.Command, args []string) error {
-	envName := resolveEnvName(verifyEnvName)
+	envName, err := resolveEnvName(verifyEnvName)
+	if err != nil {
+		return err
+	}
 
 	eFile := defaultEnvFile
 	vFile := defaultVaultFile

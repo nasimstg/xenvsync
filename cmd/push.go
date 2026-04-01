@@ -50,7 +50,10 @@ func init() {
 }
 
 func runPush(cmd *cobra.Command, args []string) error {
-	envName := resolveEnvName(pushEnvName)
+	envName, err := resolveEnvName(pushEnvName)
+	if err != nil {
+		return err
+	}
 
 	srcFile := pushEnvFile
 	dstFile := pushVaultFile
