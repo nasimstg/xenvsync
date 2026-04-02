@@ -21,7 +21,7 @@ to version control while keeping the decryption key strictly local.`,
 func Execute() error {
 	if err := rootCmd.Execute(); err != nil {
 		var quiet quietError
-		if !(errors.As(err, &quiet) && quiet.Quiet()) {
+		if !errors.As(err, &quiet) || !quiet.Quiet() {
 			fmt.Fprintln(os.Stderr, err)
 		}
 		return err

@@ -56,7 +56,7 @@ func TestEnvs_NamedEnvironmentsAreSorted(t *testing.T) {
 		if alpha == -1 || production == -1 || staging == -1 {
 			t.Fatalf("expected all named envs in output, got: %q", output)
 		}
-		if !(alpha < production && production < staging) {
+		if alpha >= production || production >= staging {
 			t.Fatalf("named environments are not sorted alphabetically, got: %q", output)
 		}
 	})
