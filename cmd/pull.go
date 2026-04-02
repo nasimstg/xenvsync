@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/nasimstg/xenvsync/internal/crypto"
 	"github.com/nasimstg/xenvsync/internal/env"
 
 	"github.com/spf13/cobra"
@@ -57,6 +58,7 @@ func runPull(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	defer crypto.ZeroBytes(plaintext)
 
 	// 2. Parse to validate, then write the .env file.
 	pairs, err := env.Parse(plaintext)
@@ -65,7 +67,8 @@ func runPull(cmd *cobra.Command, args []string) error {
 	}
 
 	output := env.Marshal(pairs)
-	if err := os.WriteFile(dstFile, output, 0644); err != nil {
+	defer crypto.ZeroBytes(output)
+	if err := os.WriteFile(dstFile, output, 0600); err != nil {
 		return fmt.Errorf("failed to write %s: %w", dstFile, err)
 	}
 

@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/nasimstg/xenvsync/internal/env"
@@ -101,7 +102,7 @@ func discoverEnvironments() []EnvInfo {
 	for k := range seen {
 		names = append(names, k)
 	}
-	sortStrings(names)
+	sort.Strings(names)
 	for _, n := range names {
 		result = append(result, *seen[n])
 	}
@@ -166,6 +167,8 @@ func loadMergedPairs(primaryFile string, noFallback bool) ([]env.Pair, error) {
 			merged[p.Key] = p.Value
 			orderedKeys = append(orderedKeys, p.Key)
 		}
+	} else if !os.IsNotExist(err) {
+		return nil, fmt.Errorf("failed to parse %s: %w", sharedEnvFile, err)
 	}
 
 	// Layer 2: primary file (.env or .env.<name>)
@@ -188,6 +191,8 @@ func loadMergedPairs(primaryFile string, noFallback bool) ([]env.Pair, error) {
 			}
 			merged[p.Key] = p.Value
 		}
+	} else if !os.IsNotExist(err) {
+		return nil, fmt.Errorf("failed to parse %s: %w", localEnvFile, err)
 	}
 
 	// Build result preserving key order
@@ -200,12 +205,3 @@ func loadMergedPairs(primaryFile string, noFallback bool) ([]env.Pair, error) {
 	}
 	return result, nil
 }
-
-func sortStrings(s []string) {
-	for i := 1; i < len(s); i++ {
-		for j := i; j > 0 && s[j] < s[j-1]; j-- {
-			s[j], s[j-1] = s[j-1], s[j]
-		}
-	}
-}
-

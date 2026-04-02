@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/nasimstg/xenvsync/internal/env"
 
@@ -61,8 +62,22 @@ func runDiff(cmd *cobra.Command, args []string) error {
 	// Decrypt vault (may not exist).
 	vaultPairs, vaultErr := decryptVaultPairs(vFile)
 
-	if envErr != nil && vaultErr != nil {
+	if envErr != nil && vaultErr != nil && os.IsNotExist(envErr) && os.IsNotExist(vaultErr) {
 		return fmt.Errorf("neither %s nor %s found", eFile, vFile)
+	}
+
+	if envErr != nil && !os.IsNotExist(envErr) {
+		return fmt.Errorf("failed to parse %s: %w", eFile, envErr)
+	}
+	if vaultErr != nil && !os.IsNotExist(vaultErr) {
+		return fmt.Errorf("failed to read/decrypt %s: %w", vFile, vaultErr)
+	}
+
+	if envErr != nil && os.IsNotExist(envErr) {
+		envPairs = nil
+	}
+	if vaultErr != nil && os.IsNotExist(vaultErr) {
+		vaultPairs = nil
 	}
 
 	changes := computeKeyChanges(vaultPairs, envPairs)

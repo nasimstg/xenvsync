@@ -83,6 +83,8 @@ func Parse(data []byte) ([]Pair, error) {
 				}
 				val = builder.String()
 			}
+		} else {
+			val = stripInlineComment(val)
 		}
 
 		pairs = append(pairs, Pair{Key: key, Value: val})
@@ -92,6 +94,18 @@ func Parse(data []byte) ([]Pair, error) {
 		return nil, fmt.Errorf("reading env data: %w", err)
 	}
 	return pairs, nil
+}
+
+func stripInlineComment(val string) string {
+	for i := 0; i < len(val); i++ {
+		if val[i] != '#' {
+			continue
+		}
+		if i == 0 || val[i-1] == ' ' || val[i-1] == '\t' {
+			return strings.TrimSpace(val[:i])
+		}
+	}
+	return val
 }
 
 // Marshal serializes pairs back to .env format (KEY=VALUE\n).

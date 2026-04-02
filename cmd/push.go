@@ -97,6 +97,7 @@ func runPush(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
+		defer crypto.ZeroBytes(key)
 		ciphertext, err := crypto.Encrypt(key, plaintext)
 		if err != nil {
 			return fmt.Errorf("encryption failed: %w", err)

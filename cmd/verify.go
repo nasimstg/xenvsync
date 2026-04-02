@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/nasimstg/xenvsync/internal/crypto"
 	"github.com/nasimstg/xenvsync/internal/env"
 	"github.com/nasimstg/xenvsync/internal/vault"
 
@@ -72,6 +73,7 @@ func runVerify(cmd *cobra.Command, args []string) error {
 			fmt.Printf("FAIL  vault decrypt — %v\n", err)
 			failed++
 		} else {
+			defer crypto.ZeroBytes(plaintext)
 			pairs, err := env.Parse(plaintext)
 			if err != nil {
 				fmt.Printf("FAIL  vault payload — decrypted content is not valid .env format: %v\n", err)
@@ -88,15 +90,20 @@ func runVerify(cmd *cobra.Command, args []string) error {
 	if envErr != nil {
 		fmt.Printf("SKIP  duplicate keys — %s not found\n", eFile)
 	} else {
-		dupes := findDuplicateKeys(envData)
-		if len(dupes) == 0 {
-			fmt.Printf("PASS  duplicate keys — no duplicates in %s\n", eFile)
-			passed++
+		dupes, err := findDuplicateKeys(envData)
+		if err != nil {
+			fmt.Printf("FAIL  duplicate keys — invalid .env format in %s: %v\n", eFile, err)
+			failed++
 		} else {
-			for _, d := range dupes {
-				fmt.Printf("WARN  duplicate key %q appears %d times in %s\n", d.Key, d.Count, eFile)
+			if len(dupes) == 0 {
+				fmt.Printf("PASS  duplicate keys — no duplicates in %s\n", eFile)
+				passed++
+			} else {
+				for _, d := range dupes {
+					fmt.Printf("WARN  duplicate key %q appears %d times in %s\n", d.Key, d.Count, eFile)
+				}
+				warnings += len(dupes)
 			}
-			warnings += len(dupes)
 		}
 	}
 
@@ -164,10 +171,10 @@ type duplicateKey struct {
 }
 
 // findDuplicateKeys scans env-formatted data for keys that appear more than once.
-func findDuplicateKeys(data []byte) []duplicateKey {
+func findDuplicateKeys(data []byte) ([]duplicateKey, error) {
 	pairs, err := env.Parse(data)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	counts := make(map[string]int)
@@ -181,5 +188,5 @@ func findDuplicateKeys(data []byte) []duplicateKey {
 			dupes = append(dupes, duplicateKey{Key: k, Count: c})
 		}
 	}
-	return dupes
+	return dupes, nil
 }

@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/nasimstg/xenvsync/internal/crypto"
 	"github.com/nasimstg/xenvsync/internal/env"
 	"github.com/spf13/cobra"
 )
@@ -167,6 +168,7 @@ func tryDecryptToPairs(vaultRaw []byte) []env.Pair {
 	if err != nil {
 		return nil
 	}
+	defer crypto.ZeroBytes(plaintext)
 	pairs, err := env.Parse(plaintext)
 	if err != nil {
 		return nil
