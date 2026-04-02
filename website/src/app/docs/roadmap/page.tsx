@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 export const metadata = { title: "Roadmap - xenvsync" };
 
 export default function DocsRoadmap() {
-  redirect("/roadmap");
+  permanentRedirect("/roadmap");
 }

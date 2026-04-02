@@ -1,5 +1,6 @@
 import { CodeBlock } from "@/components/CodeBlock";
-import { Section, PageHeader, Card } from "@/components/DocsComponents";
+import { Section, PageHeader } from "@/components/DocsComponents";
+import Link from "next/link";
 
 export const metadata = {
   title: "Installation - xenvsync",
@@ -46,7 +47,7 @@ $ scoop install xenvsync`}
       </Section>
 
       <Section title="Go Install">
-        <p className="text-[var(--color-text-secondary)] mb-3">Requires Go 1.22+.</p>
+        <p className="text-[var(--color-text-secondary)] mb-3">Requires Go 1.25+.</p>
         <CodeBlock title="Install" language="bash">
           {`$ go install github.com/nasimstg/xenvsync@latest`}
         </CodeBlock>
@@ -57,10 +58,10 @@ $ scoop install xenvsync`}
 
       <Section title="Binary Releases">
         <p className="text-[var(--color-text-secondary)] mb-4">
-          Prebuilt binaries are available on{" "}
-          <a href="https://github.com/nasimstg/xenvsync/releases" className="text-[var(--color-accent)] hover:underline" target="_blank" rel="noopener noreferrer">
-            GitHub Releases
-          </a>
+          Prebuilt binaries are available from the release channels listed in{" "}
+          <Link href="/docs/changelog" className="text-[var(--color-accent)] hover:underline">
+            Changelog
+          </Link>
           .
         </p>
 

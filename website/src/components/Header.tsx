@@ -9,7 +9,7 @@ import dynamic from "next/dynamic";
 const Search = dynamic(() => import("@/components/Search").then((m) => m.Search), {
   ssr: false,
   loading: () => (
-    <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-[var(--color-text-muted)] glass-bright">
+    <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-[var(--color-text-secondary)] bg-[var(--color-bg-elevated)]/90 border border-[var(--color-border-bright)]">
       Search
     </button>
   ),
@@ -17,6 +17,9 @@ const Search = dynamic(() => import("@/components/Search").then((m) => m.Search)
 
 const navLinks = [
   { href: "/docs/getting-started", label: "Docs" },
+  { href: "/examples", label: "Examples" },
+  { href: "/blog", label: "Blog" },
+  { href: "/donate", label: "Donate" },
   { href: "/roadmap", label: "Roadmap" },
 ];
 
@@ -24,7 +27,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 glass">
+    <header className="sticky top-0 z-50 border-b border-[var(--color-border-bright)] bg-[color:rgba(8,8,14,0.9)] backdrop-blur-xl shadow-[0_12px_28px_rgba(0,0,0,0.38)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 font-bold text-base group">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-purple)] flex items-center justify-center group-hover:shadow-[0_0_12px_var(--color-accent-glow-strong)] transition-shadow">
@@ -51,19 +54,10 @@ export function Header() {
             href="https://github.com/nasimstg/xenvsync"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg-elevated)] transition-colors"
-          >
-            <Github className="w-4 h-4" />
-            GitHub
-          </a>
-          <a
-            href="https://github.com/nasimstg/xenvsync"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 ml-1 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--color-bg-elevated)] border border-[var(--color-border)] hover:border-[var(--color-accent-dim)] hover:text-[var(--color-accent-bright)] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--color-bg-elevated)] border border-[var(--color-border)] hover:border-[var(--color-accent-dim)] hover:text-[var(--color-accent-bright)] transition-colors"
           >
             <Star className="w-3.5 h-3.5" />
-            Star
+            Star on GitHub
           </a>
         </nav>
 
@@ -85,7 +79,7 @@ export function Header() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden overflow-hidden border-t border-[var(--color-border)]"
+            className="md:hidden overflow-hidden border-t border-[var(--color-border)] bg-[color:rgba(8,8,14,0.96)] backdrop-blur-xl"
           >
             <div className="px-4 py-3 space-y-1">
               {navLinks.map((link) => (
