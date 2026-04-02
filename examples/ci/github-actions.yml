@@ -17,10 +17,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install xenvsync
-        run: |
-          LATEST=$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | jq -r .tag_name)
-          VERSION=${LATEST#v}
-          curl -fsSL "https://github.com/nasimstg/xenvsync/releases/download/${LATEST}/xenvsync_${VERSION}_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+        run: bash scripts/install-latest-xenvsync.sh
 
       - name: Decrypt secrets
         env:
@@ -45,10 +42,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install xenvsync
-        run: |
-          LATEST=$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | jq -r .tag_name)
-          VERSION=${LATEST#v}
-          curl -fsSL "https://github.com/nasimstg/xenvsync/releases/download/${LATEST}/xenvsync_${VERSION}_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+        run: bash scripts/install-latest-xenvsync.sh
 
       - name: Decrypt staging secrets
         env:
@@ -72,10 +66,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install xenvsync
-        run: |
-          LATEST=$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | jq -r .tag_name)
-          VERSION=${LATEST#v}
-          curl -fsSL "https://github.com/nasimstg/xenvsync/releases/download/${LATEST}/xenvsync_${VERSION}_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+        run: bash scripts/install-latest-xenvsync.sh
 
       - name: Deploy with in-memory secrets
         env:

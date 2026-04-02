@@ -10,17 +10,21 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        version =
+          if self ? shortRev then "git-${self.shortRev}"
+          else if self ? rev then "git-${builtins.substring 0 8 self.rev}"
+          else "git-local";
       in
       {
         packages.default = pkgs.buildGoModule {
           pname = "xenvsync";
-          version = "1.9.0";
+          inherit version;
           src = ./.;
           vendorHash = null;
 
           ldflags = [
             "-s" "-w"
-            "-X main.version=${self.packages.${system}.default.version}"
+            "-X main.version=${version}"
           ];
 
           meta = with pkgs.lib; {
