@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/nasimstg/xenvsync/internal/crypto"
 	"github.com/nasimstg/xenvsync/internal/env"
 
 	"github.com/spf13/cobra"
@@ -62,6 +63,7 @@ func runRun(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	defer crypto.ZeroBytes(plaintext)
 
 	// 2. Parse decrypted vars.
 	pairs, err := env.Parse(plaintext)
@@ -89,18 +91,27 @@ func runRun(cmd *cobra.Command, args []string) error {
 
 	// Forward signals to the child so Ctrl-C works as expected.
 	sigCh := make(chan os.Signal, 1)
+	done := make(chan struct{})
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+	defer signal.Stop(sigCh)
+	defer close(done)
+
 	go func() {
-		for sig := range sigCh {
-			if child.Process != nil {
-				_ = child.Process.Signal(sig)
+		for {
+			select {
+			case sig := <-sigCh:
+				if child.Process != nil {
+					_ = child.Process.Signal(sig)
+				}
+			case <-done:
+				return
 			}
 		}
 	}()
 
 	if err := child.Run(); err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
-			os.Exit(exitErr.ExitCode())
+			return newQuietExitCodeError(exitErr.ExitCode())
 		}
 		return fmt.Errorf("failed to run command: %w", err)
 	}
