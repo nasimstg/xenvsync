@@ -81,7 +81,10 @@ func TestVerify_DuplicateKeys(t *testing.T) {
 
 func TestFindDuplicateKeys(t *testing.T) {
 	data := []byte("A=1\nB=2\nA=3\nC=4\nB=5\nB=6\n")
-	dupes := findDuplicateKeys(data)
+	dupes, err := findDuplicateKeys(data)
+	if err != nil {
+		t.Fatalf("unexpected parse error: %v", err)
+	}
 
 	if len(dupes) != 2 {
 		t.Fatalf("expected 2 duplicate keys, got %d", len(dupes))
@@ -102,9 +105,20 @@ func TestFindDuplicateKeys(t *testing.T) {
 
 func TestFindDuplicateKeys_NoDupes(t *testing.T) {
 	data := []byte("A=1\nB=2\nC=3\n")
-	dupes := findDuplicateKeys(data)
+	dupes, err := findDuplicateKeys(data)
+	if err != nil {
+		t.Fatalf("unexpected parse error: %v", err)
+	}
 	if len(dupes) != 0 {
 		t.Fatalf("expected 0 duplicates, got %d", len(dupes))
+	}
+}
+
+func TestFindDuplicateKeys_InvalidEnv(t *testing.T) {
+	data := []byte("INVALID_LINE\n")
+	_, err := findDuplicateKeys(data)
+	if err == nil {
+		t.Fatal("expected parse error for malformed .env input")
 	}
 }
 

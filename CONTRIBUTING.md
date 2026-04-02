@@ -2,10 +2,15 @@
 
 Thank you for considering contributing to xenvsync! Here's how to get started.
 
+Before coding, review:
+
+- [Development Guide](docs/DEVELOPMENT.md)
+- [Architecture](docs/ARCHITECTURE.md)
+
 ## Development Setup
 
 1. **Fork and clone** the repository.
-2. Ensure you have **Go 1.22+** installed.
+2. Ensure you have **Go 1.25+** installed.
 3. Install dependencies:
    ```bash
    go mod download
@@ -13,6 +18,11 @@ Thank you for considering contributing to xenvsync! Here's how to get started.
 4. Run the tests:
    ```bash
    go test -race ./...
+   ```
+5. (Recommended) Install quality tools used by CI:
+   ```bash
+   go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+   go install golang.org/x/vuln/cmd/govulncheck@latest
    ```
 
 ## Making Changes
@@ -28,7 +38,11 @@ Thank you for considering contributing to xenvsync! Here's how to get started.
    go test -race ./...
    go vet ./...
    ```
-5. Open a pull request against `main`.
+5. Run the local CI-equivalent checks before pushing:
+   ```bash
+   ./scripts/ci-check.sh
+   ```
+6. Open a pull request against `main`.
 
 ## Code Style
 

@@ -85,6 +85,19 @@ func TestParse_WhitespaceAroundEquals(t *testing.T) {
 	assertPair(t, pairs[0], "KEY", "value")
 }
 
+func TestParse_UnquotedInlineComments(t *testing.T) {
+	input := []byte("KEY=value # this is a comment\nHASH=abc#123\n")
+	pairs, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse() error: %v", err)
+	}
+	if len(pairs) != 2 {
+		t.Fatalf("expected 2 pairs, got %d", len(pairs))
+	}
+	assertPair(t, pairs[0], "KEY", "value")
+	assertPair(t, pairs[1], "HASH", "abc#123")
+}
+
 func TestParse_NoEqualsSign(t *testing.T) {
 	input := []byte("INVALID_LINE\n")
 	_, err := Parse(input)

@@ -35,7 +35,7 @@ directory to your `PATH`.
 
 ## From Source
 
-Requires Go 1.22+.
+Requires Go 1.25+.
 
 ```bash
 go install github.com/nasimstg/xenvsync@latest

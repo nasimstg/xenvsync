@@ -88,10 +88,11 @@ func runInit(cmd *cobra.Command, args []string) error {
 func ensureGitignore(entries ...string) error {
 	existing, _ := os.ReadFile(gitignoreFile) // ignore error; file may not exist yet
 	content := string(existing)
+	lines := strings.Split(content, "\n")
 
 	var toAdd []string
 	for _, entry := range entries {
-		if !strings.Contains(content, entry) {
+		if !containsExactGitignoreEntry(lines, entry) {
 			toAdd = append(toAdd, entry)
 		}
 	}
@@ -118,4 +119,13 @@ func ensureGitignore(entries ...string) error {
 		}
 	}
 	return nil
+}
+
+func containsExactGitignoreEntry(lines []string, entry string) bool {
+	for _, line := range lines {
+		if strings.TrimSpace(line) == entry {
+			return true
+		}
+	}
+	return false
 }

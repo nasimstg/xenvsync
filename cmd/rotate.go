@@ -53,6 +53,7 @@ func runRotate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf("cannot decrypt current vault: %w", err)
 	}
+	defer crypto.ZeroBytes(plaintext)
 
 	// Validate the decrypted content.
 	pairs, err := env.Parse(plaintext)
@@ -60,6 +61,7 @@ func runRotate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("corrupt vault payload: %w", err)
 	}
 	serialized := env.Marshal(pairs)
+	defer crypto.ZeroBytes(serialized)
 
 	// 2. Check for team roster.
 	roster, err := team.Load(team.RosterFile)
@@ -91,6 +93,16 @@ func runRotate(cmd *cobra.Command, args []string) error {
 		}
 		fmt.Printf("Rotated vault → %s (V2, %d recipient(s))\n", vFile, len(roster.Members))
 	} else {
+		oldVaultData, err := os.ReadFile(vFile)
+		if err != nil {
+			return fmt.Errorf("failed to read %s for rollback: %w", vFile, err)
+		}
+		oldKeyData, err := os.ReadFile(keyFile)
+		if err != nil {
+			return fmt.Errorf("failed to read %s for rollback: %w", keyFile, err)
+		}
+		defer crypto.ZeroBytes(oldKeyData)
+
 		// V1: generate a new symmetric key and re-encrypt.
 		newKeyHex, err := crypto.GenerateKey()
 		if err != nil {
@@ -100,6 +112,7 @@ func runRotate(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return fmt.Errorf("key decode failed: %w", err)
 		}
+		defer crypto.ZeroBytes(newKey)
 
 		ciphertext, err := crypto.Encrypt(newKey, serialized)
 		if err != nil {
@@ -108,14 +121,19 @@ func runRotate(cmd *cobra.Command, args []string) error {
 
 		vaultData = vault.Encode(ciphertext)
 
-		// Write vault FIRST — if this fails, the old key still works.
+		// Write vault first, then key. If key write fails, roll back to the prior vault/key.
 		if err := os.WriteFile(vFile, vaultData, 0644); err != nil {
 			return fmt.Errorf("failed to write %s: %w", vFile, err)
 		}
 
 		// Write the new key only after vault is successfully written.
 		if err := os.WriteFile(keyFile, []byte(newKeyHex), 0600); err != nil {
-			return fmt.Errorf("failed to write new key (vault already re-encrypted — restore from git): %w", err)
+			restoreVaultErr := os.WriteFile(vFile, oldVaultData, 0644)
+			restoreKeyErr := os.WriteFile(keyFile, oldKeyData, 0600)
+			if restoreVaultErr != nil || restoreKeyErr != nil {
+				return fmt.Errorf("failed to write new key: %w (rollback failed: vault=%v, key=%v)", err, restoreVaultErr, restoreKeyErr)
+			}
+			return fmt.Errorf("failed to write new key: %w (previous vault/key restored)", err)
 		}
 		fmt.Printf("Rotated key → %s (mode 0600)\n", keyFile)
 		fmt.Printf("Rotated vault → %s\n", vFile)

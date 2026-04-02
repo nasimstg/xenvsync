@@ -28,6 +28,7 @@ func MultiKeyEncrypt(recipients []Recipient, plaintext []byte) ([]vault.KeySlot,
 	if _, err := io.ReadFull(rand.Reader, symKey); err != nil {
 		return nil, nil, fmt.Errorf("crypto/rand failed: %w", err)
 	}
+	defer ZeroBytes(symKey)
 
 	// Encrypt the data with the symmetric key.
 	ciphertext, err := Encrypt(symKey, plaintext)
@@ -78,6 +79,7 @@ func MultiKeyDecrypt(v2 *vault.V2Vault, privateKey [X25519KeySize]byte) ([]byte,
 
 		// Decrypt the data with the recovered symmetric key.
 		plaintext, err := Decrypt(symKey, v2.Ciphertext)
+		ZeroBytes(symKey)
 		if err != nil {
 			continue // Symmetric key didn't work; try next slot.
 		}

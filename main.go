@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"os"
 
 	"github.com/nasimstg/xenvsync/cmd"
@@ -16,6 +17,10 @@ var (
 func main() {
 	cmd.SetVersion(version, commit, date)
 	if err := cmd.Execute(); err != nil {
+		var exitCodeErr cmd.ExitCodeCarrier
+		if errors.As(err, &exitCodeErr) {
+			os.Exit(exitCodeErr.ExitCode())
+		}
 		os.Exit(1)
 	}
 }

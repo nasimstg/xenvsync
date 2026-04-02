@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.13.0] - 2026-04-02
+
+### Added
+- CI quality gates: module tidy drift check, 80% coverage threshold, and govulncheck scan
+- Website validation job in GitHub Actions (lint, typecheck, build)
+- Local development guide in `docs/DEVELOPMENT.md`
+- Shared installer script for CI examples: `scripts/install-latest-xenvsync.sh`
+
+### Changed
+- `run` now preserves child process exit codes without double-printing errors
+- `verify` duplicate-key checks now surface parse failures explicitly
+- `.env` parser now supports unquoted inline comments while preserving literal `#` when not comment-prefixed
+- Makefile includes `help`, `test-coverage`, and `ci-check` targets
+- AUR package now builds from git metadata-derived version
+- Nix package version now derives from git revision when available
+- Minimum documented Go version is now 1.25+
+
+### Security
+- Expanded secret zeroization coverage across decrypt/encrypt flows and team-key operations
+- `pull` now writes decrypted env files with mode `0600`
+- `rotate` now rolls back vault/key files if writing the new key fails
+
+### Fixed
+- `diff` now handles missing env/vault files and parse errors with clearer diagnostics
+- `init` gitignore updates now match exact entries to avoid false positives
+
 ## [v1.12.0] - 2026-04-01
 
 ### Security

@@ -11,9 +11,7 @@ definitions:
     - step: &install-xenvsync
         name: Install xenvsync
         script:
-          - LATEST=$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | grep -o '"tag_name":"[^"]*' | cut -d'"' -f4)
-          - VERSION=${LATEST#v}
-          - curl -fsSL "https://github.com/nasimstg/xenvsync/releases/download/${LATEST}/xenvsync_${VERSION}_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+          - bash scripts/install-latest-xenvsync.sh
 
 pipelines:
   default:
@@ -21,9 +19,7 @@ pipelines:
         name: Build
         script:
           # Install xenvsync
-          - LATEST=$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | grep -o '"tag_name":"[^"]*' | cut -d'"' -f4)
-          - VERSION=${LATEST#v}
-          - curl -fsSL "https://github.com/nasimstg/xenvsync/releases/download/${LATEST}/xenvsync_${VERSION}_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+          - bash scripts/install-latest-xenvsync.sh
           # Decrypt secrets
           - echo "$XENVSYNC_KEY" > .xenvsync.key
           - chmod 600 .xenvsync.key
@@ -39,9 +35,7 @@ pipelines:
           name: Deploy production
           deployment: production
           script:
-            - LATEST=$(curl -s https://api.github.com/repos/nasimstg/xenvsync/releases/latest | grep -o '"tag_name":"[^"]*' | cut -d'"' -f4)
-            - VERSION=${LATEST#v}
-            - curl -fsSL "https://github.com/nasimstg/xenvsync/releases/download/${LATEST}/xenvsync_${VERSION}_linux_amd64.tar.gz" | tar xz -C /usr/local/bin
+            - bash scripts/install-latest-xenvsync.sh
             - echo "$XENVSYNC_KEY" > .xenvsync.key
             - chmod 600 .xenvsync.key
             - xenvsync pull --env production

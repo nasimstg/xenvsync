@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -19,7 +20,10 @@ to version control while keeping the decryption key strictly local.`,
 // Execute runs the root command. Called from main.go.
 func Execute() error {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		var quiet quietError
+		if !errors.As(err, &quiet) || !quiet.Quiet() {
+			fmt.Fprintln(os.Stderr, err)
+		}
 		return err
 	}
 	return nil

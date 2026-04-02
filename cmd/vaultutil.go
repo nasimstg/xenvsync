@@ -70,6 +70,7 @@ func decryptV2(vaultRaw []byte) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("invalid identity in %s: %w", idPath, err)
 	}
+	defer crypto.ZeroBytes(kp.PrivateKey[:])
 
 	plaintext, err := crypto.MultiKeyDecrypt(v2, kp.PrivateKey)
 	if err != nil {
@@ -111,5 +112,6 @@ func decryptVaultPairs(vaultPath string) ([]env.Pair, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer crypto.ZeroBytes(plaintext)
 	return env.Parse(plaintext)
 }

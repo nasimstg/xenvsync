@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run lint && npm run build"
   },
   "keywords": [],
   "author": "Md Nasim Sheikh <contact@nasimstg.dev> (https://www.nasimstg.dev)",
@@ -22,6 +25,8 @@
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
+    "eslint": "^9.38.0",
+    "eslint-config-next": "^16.2.1",
     "lucide-react": "^0.577.0",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.2",

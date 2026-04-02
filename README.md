@@ -47,7 +47,7 @@ npm install -g @nasimstg/xenvsync
 # or run without installing
 npx @nasimstg/xenvsync
 
-# Go 1.22+
+# Go 1.25+
 go install github.com/nasimstg/xenvsync@latest
 
 # Nix

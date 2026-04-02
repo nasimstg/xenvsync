@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/nasimstg/xenvsync/internal/crypto"
 	"github.com/nasimstg/xenvsync/internal/vault"
 
 	"github.com/spf13/cobra"
@@ -216,6 +217,7 @@ func checkVaultDecrypt(vFile string) checkResult {
 	if err != nil {
 		return checkResult{"fail", fmt.Sprintf("Vault decrypt: %v", err)}
 	}
+	defer crypto.ZeroBytes(plaintext)
 	return checkResult{"pass", fmt.Sprintf("Vault decrypt: OK (%d bytes)", len(plaintext))}
 }
 

@@ -45,5 +45,6 @@ website/node_modules/
 website/.next/
 website/out/
 website/next-env.d.ts
+website/tsconfig.tsbuildinfo
 website/.vercel/
 website/.env*.local
