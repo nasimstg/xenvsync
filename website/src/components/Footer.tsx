@@ -7,17 +7,36 @@ const footerSections = [
     links: [
       { href: "/docs/getting-started", label: "Getting Started" },
       { href: "/docs/installation", label: "Installation" },
+      { href: "/examples", label: "Examples" },
+      { href: "/examples/workflows", label: "Workflow Examples" },
+      { href: "/examples/usages", label: "Usage Examples" },
+      { href: "/docs/faq", label: "FAQ" },
+      { href: "/use-cases", label: "Use Cases" },
+      { href: "/docs/troubleshooting", label: "Troubleshooting" },
       { href: "/docs/commands", label: "Commands" },
+      { href: "/integrations", label: "Integrations" },
+      { href: "/docs/ci-cd", label: "CI/CD Recipes" },
       { href: "/docs/security", label: "Security Model" },
     ],
   },
   {
     title: "Project",
     links: [
+      { href: "/blog", label: "Blog" },
+      { href: "/donate", label: "Donate" },
       { href: "/roadmap", label: "Roadmap" },
-      { href: "https://github.com/nasimstg/xenvsync/blob/main/CONTRIBUTING.md", label: "Contributing", external: true },
-      { href: "https://github.com/nasimstg/xenvsync/blob/main/LICENSE", label: "License (MIT)", external: true },
-      { href: "https://github.com/nasimstg/xenvsync/releases", label: "Changelog", external: true },
+      { href: "/docs/contributing", label: "Contributing" },
+      { href: "/docs/changelog", label: "Changelog" },
+      { href: "/license", label: "License (MIT)" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { href: "/privacy", label: "Privacy" },
+      { href: "/terms", label: "Terms" },
+      { href: "/consent", label: "Consent" },
+      { href: "/contact", label: "Contact" },
     ],
   },
   {
@@ -34,9 +53,9 @@ export function Footer() {
   return (
     <footer className="border-t border-[var(--color-border)] mt-24 bg-[var(--color-bg-card)]/50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
           {/* Brand */}
-          <div className="col-span-1 sm:col-span-2 md:col-span-1">
+          <div className="col-span-1 sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 font-bold text-sm">
               <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-purple)] flex items-center justify-center">
                 <Terminal className="w-3 h-3 text-white" />

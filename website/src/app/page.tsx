@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 import { CodeBlock } from "@/components/CodeBlock";
 import { AnimateOnScroll } from "@/components/AnimateOnScroll";
 import { Terminal } from "@/components/Terminal";
+import { HeroInstallTabs } from "@/components/HeroInstallTabs";
 import {
   Shield,
   Zap,
@@ -96,14 +97,7 @@ export default function Home() {
 
           {/* Install one-liner */}
           <AnimateOnScroll delay={0.4}>
-            <div className="mt-8 max-w-md mx-auto">
-              <CodeBlock>
-                {`$ brew install nasimstg/tap/xenvsync`}
-              </CodeBlock>
-              <p className="text-xs text-[var(--color-text-muted)] mt-2">
-                or <code>npm i -g @nasimstg/xenvsync</code> · <code>scoop install xenvsync</code> · <code>go install github.com/nasimstg/xenvsync@latest</code>
-              </p>
-            </div>
+            <HeroInstallTabs />
           </AnimateOnScroll>
 
           {/* Scroll hint */}

@@ -13,6 +13,20 @@ function HighlightWorker() {
     const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
     if (terms.length === 0) return;
 
+    let cleanupTimer: ReturnType<typeof setTimeout> | undefined;
+    let marks: HTMLElement[] = [];
+
+    const removeMarks = () => {
+      for (const mark of marks) {
+        const parent = mark.parentNode;
+        if (!parent) continue;
+        const text = document.createTextNode(mark.textContent || "");
+        parent.replaceChild(text, mark);
+        parent.normalize();
+      }
+      marks = [];
+    };
+
     // Small delay to ensure page content is rendered
     const timer = setTimeout(() => {
       const article = document.querySelector("article") || document.querySelector("main");
@@ -47,7 +61,7 @@ function HighlightWorker() {
 
       // Process matches in reverse document order so earlier indices stay valid
       const processed = new Set<Text>();
-      const marks: HTMLElement[] = [];
+      marks = [];
 
       // Group by node, sort by index descending
       const byNode = new Map<Text, { index: number; length: number }[]>();
@@ -64,7 +78,7 @@ function HighlightWorker() {
         // Sort descending so we can split from the end
         const sorted = nodeMatches.sort((a, b) => b.index - a.index);
 
-        let current: Text = node;
+        const current: Text = node;
         for (const { index, length } of sorted) {
           if (index + length > (current.textContent?.length || 0)) continue;
 
@@ -89,20 +103,16 @@ function HighlightWorker() {
       }
 
       // Clean up highlights after 6 seconds
-      const cleanup = setTimeout(() => {
-        for (const mark of marks) {
-          const parent = mark.parentNode;
-          if (!parent) continue;
-          const text = document.createTextNode(mark.textContent || "");
-          parent.replaceChild(text, mark);
-          parent.normalize();
-        }
-      }, 6000);
-
-      return () => clearTimeout(cleanup);
+      cleanupTimer = setTimeout(removeMarks, 6000);
     }, 300);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (cleanupTimer) {
+        clearTimeout(cleanupTimer);
+      }
+      removeMarks();
+    };
   }, [q]);
 
   return null;

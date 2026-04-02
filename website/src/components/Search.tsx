@@ -29,7 +29,7 @@ const searchIndex: SearchEntry[] = [
     section: "Docs",
     keywords: ["quick start", "setup", "prerequisites", "go", "workflow"],
     content:
-      "Get up and running with xenvsync in under a minute. Prerequisites Go 1.22+ or download a prebuilt binary.",
+      "Get up and running with xenvsync in under a minute. Prerequisites Go 1.25+ or download a prebuilt binary.",
   },
   {
     href: "/docs/getting-started",
@@ -74,9 +74,9 @@ const searchIndex: SearchEntry[] = [
     title: "Installation",
     section: "Docs",
     heading: "Go Install",
-    keywords: ["install", "go install", "go 1.22", "gopath"],
+    keywords: ["install", "go install", "go 1.25", "gopath"],
     content:
-      "Go Install recommended requires Go 1.22+. Places binary in GOPATH/bin. go install github.com/nasimstg/xenvsync@latest",
+      "Go Install recommended requires Go 1.25+. Places binary in GOPATH/bin. go install github.com/nasimstg/xenvsync@latest",
   },
   {
     href: "/docs/installation",
@@ -317,6 +317,219 @@ const searchIndex: SearchEntry[] = [
       "Feature comparison table between xenvsync, dotenv-vault, sops, and git-crypt. Covers cloud dependency, in-memory injection, multi-environment, team sharing, key rotation, and more.",
   },
 
+  // FAQ + Project Docs
+  {
+    href: "/docs/faq",
+    title: "FAQ",
+    section: "Docs",
+    keywords: ["faq", "questions", "team", "ci", "rotate", "troubleshooting"],
+    content:
+      "Frequently asked questions covering setup, team sharing, CI usage, key rotation, and security practices.",
+  },
+  {
+    href: "/use-cases",
+    title: "Use Cases",
+    section: "Docs",
+    keywords: ["use cases", "solo", "startup", "enterprise", "open source", "workflow"],
+    content:
+      "Practical xenvsync workflows for solo developers, startup teams, enterprise platform teams, and open-source maintainers.",
+  },
+  {
+    href: "/examples",
+    title: "Examples",
+    section: "Examples",
+    keywords: ["examples", "recipes", "workflows", "usages", "playbooks", "solo", "startup", "enterprise"],
+    content:
+      "Team-based examples hub with command playbooks for solo developers, startup teams, and enterprise platform groups.",
+  },
+  {
+    href: "/examples/workflows",
+    title: "Workflow Examples",
+    section: "Examples",
+    keywords: ["workflow", "local", "ci", "rotation", "promotion", "offboarding", "incident response"],
+    content:
+      "Detailed workflow playbooks for local dev loops, startup onboarding, enterprise CI gates, promotion, and incident response.",
+  },
+  {
+    href: "/examples/usages",
+    title: "Usage Examples",
+    section: "Examples",
+    keywords: ["usage", "commands", "backend", "devops", "platform", "solo", "startup", "enterprise"],
+    content:
+      "Command cookbook by team maturity with recipes for bootstrap, audit, export, governance, and revocation flows.",
+  },
+  {
+    href: "/docs/troubleshooting",
+    title: "Troubleshooting",
+    section: "Docs",
+    keywords: ["errors", "fix", "doctor", "verify", "permissions", "debug", "troubleshoot"],
+    content:
+      "Troubleshooting guide for common xenvsync failures, diagnostics workflow, and fixes for key permissions, vault decrypt errors, and stale vault mismatches.",
+  },
+  {
+    href: "/integrations",
+    title: "Integrations",
+    section: "Docs",
+    keywords: ["integrations", "node", "python", "docker", "kubernetes", "terraform"],
+    content:
+      "Integration patterns for Node.js, Python, Docker Compose, Kubernetes, Terraform, and CI workflows.",
+  },
+  {
+    href: "/integrations#docker",
+    title: "Integrations",
+    section: "Docs",
+    heading: "Docker Compose",
+    keywords: ["docker", "compose", "in-memory", "run"],
+    content:
+      "Use xenvsync run with docker compose to inject secrets at process start instead of storing plaintext env files.",
+  },
+  {
+    href: "/docs/ci-cd",
+    title: "CI/CD Recipes",
+    section: "Docs",
+    keywords: ["ci", "cd", "github actions", "gitlab", "circleci", "bitbucket", "pipeline"],
+    content:
+      "CI/CD recipes for GitHub Actions, GitLab CI, CircleCI, and Bitbucket Pipelines with secure key handling and pull/run workflows.",
+  },
+  {
+    href: "/docs/ci-cd#github-actions",
+    title: "CI/CD Recipes",
+    section: "Docs",
+    heading: "GitHub Actions",
+    keywords: ["github actions", "workflow", "secrets", "pull"],
+    content:
+      "Example GitHub Actions workflow showing dependency install, key injection from secrets, vault decrypt, and app build/test steps.",
+  },
+  {
+    href: "/docs/ci-cd#gitlab-ci",
+    title: "CI/CD Recipes",
+    section: "Docs",
+    heading: "GitLab CI",
+    keywords: ["gitlab", "pipeline", "variables", "deploy"],
+    content:
+      "GitLab CI example for loading the decryption key from CI variables and running xenvsync pull per environment.",
+  },
+  {
+    href: "/docs/changelog",
+    title: "Changelog",
+    section: "Project",
+    keywords: ["changelog", "release notes", "upgrade", "version", "breaking changes"],
+    content:
+      "Release highlights and upgrade guidance. Includes links to GitHub Releases and CHANGELOG.md.",
+  },
+  {
+    href: "/docs/contributing",
+    title: "Contributing",
+    section: "Project",
+    keywords: ["contributing", "pull request", "tests", "ci-check", "issues"],
+    content:
+      "Contributing workflow for xenvsync with local setup, test expectations, and pull request checklist.",
+  },
+  {
+    href: "/blog",
+    title: "Blog",
+    section: "Blog",
+    keywords: ["blog", "articles", "comparison", "ranking", "workflow", "technical"],
+    content:
+      "xenvsync blog covering tool comparisons, rankings, migration guides, and technical deep dives.",
+  },
+  {
+    href: "/blog/tool-comparison",
+    title: "Tool Comparison",
+    section: "Blog",
+    keywords: ["tool comparison", "dotenv-vault", "sops", "xenvsync vs"],
+    content:
+      "Comparison between xenvsync, dotenv-vault, and sops across security model, CI ergonomics, and team sharing.",
+  },
+  {
+    href: "/blog/tool-ranking",
+    title: "Tool Ranking",
+    section: "Blog",
+    keywords: ["ranking", "best secret tools", "2026", "env tools"],
+    content:
+      "Ranking of .env secret management tools by security, developer experience, and operational overhead.",
+  },
+  {
+    href: "/blog/use-case-story",
+    title: "Use-Case Story",
+    section: "Blog",
+    keywords: ["story", "startup", "migration", "case study"],
+    content:
+      "Real startup migration story from plaintext environment files to encrypted xenvsync workflows.",
+  },
+  {
+    href: "/blog/developer-workflow",
+    title: "Developer Workflow",
+    section: "Blog",
+    keywords: ["developer workflow", "local to ci", "secure pipeline"],
+    content:
+      "Repeatable workflow pattern to move from local development to CI/CD without leaking plaintext secrets.",
+  },
+  {
+    href: "/blog/technical-deep-dive",
+    title: "Technical Deep Dive",
+    section: "Blog",
+    keywords: ["aes-256-gcm", "x25519", "cryptography", "technical"],
+    content:
+      "Technical deep dive into xenvsync cryptographic architecture with AES-256-GCM and X25519 recipients.",
+  },
+  {
+    href: "/blog/migration-playbook",
+    title: "Migration Playbook",
+    section: "Blog",
+    keywords: ["migration", "dotenv", "git-crypt", "playbook"],
+    content:
+      "Phased migration playbook for teams moving from dotenv and git-crypt to xenvsync.",
+  },
+  {
+    href: "/donate",
+    title: "Donate",
+    section: "Project",
+    keywords: ["donate", "sponsor", "support", "github sponsors"],
+    content:
+      "Support xenvsync via sponsorship and business support channels.",
+  },
+  {
+    href: "/privacy",
+    title: "Privacy Policy",
+    section: "Legal",
+    keywords: ["privacy", "policy", "data", "storage"],
+    content:
+      "Privacy policy covering website data handling and local preference storage.",
+  },
+  {
+    href: "/terms",
+    title: "Terms of Use",
+    section: "Legal",
+    keywords: ["terms", "legal", "license", "liability"],
+    content:
+      "Terms for using xenvsync website resources and project materials.",
+  },
+  {
+    href: "/contact",
+    title: "Contact",
+    section: "Legal",
+    keywords: ["contact", "support", "partnership", "issues", "security advisories", "discussions"],
+    content:
+      "Contact channels for bugs, feature discussions, private security disclosures, and business support requests.",
+  },
+  {
+    href: "/consent",
+    title: "Consent Preferences",
+    section: "Legal",
+    keywords: ["consent", "cookies", "preferences", "local storage", "essential", "accept all"],
+    content:
+      "Consent preferences page with storage details, category explanation, and controls to set or clear your choice.",
+  },
+  {
+    href: "/license",
+    title: "License",
+    section: "Legal",
+    keywords: ["license", "mit", "copyright", "terms", "open source"],
+    content:
+      "Full MIT License text for xenvsync, rendered from the repository LICENSE file.",
+  },
+
   // Security
   {
     href: "/docs/security",
@@ -392,6 +605,12 @@ export function Search() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  const openSearch = useCallback(() => {
+    setQuery("");
+    setSelectedIdx(0);
+    setOpen(true);
+  }, []);
+
   const results = useMemo(() => {
     if (!query.trim()) return [];
     const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -427,9 +646,16 @@ export function Search() {
   // Keyboard shortcut to open
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setOpen((v) => !v);
+        setOpen((isOpen) => {
+          if (isOpen) {
+            return false;
+          }
+          setQuery("");
+          setSelectedIdx(0);
+          return true;
+        });
       }
       if (e.key === "Escape") {
         setOpen(false);
@@ -441,17 +667,10 @@ export function Search() {
 
   // Focus input when opened
   useEffect(() => {
-    if (open) {
-      setQuery("");
-      setSelectedIdx(0);
-      setTimeout(() => inputRef.current?.focus(), 50);
-    }
+    if (!open) return;
+    const timer = setTimeout(() => inputRef.current?.focus(), 50);
+    return () => clearTimeout(timer);
   }, [open]);
-
-  // Reset selection when results change
-  useEffect(() => {
-    setSelectedIdx(0);
-  }, [results]);
 
   function onInputKeyDown(e: React.KeyboardEvent) {
     if (e.key === "ArrowDown") {
@@ -469,10 +688,12 @@ export function Search() {
   function highlight(text: string) {
     if (!query.trim()) return text;
     const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
-    const regex = new RegExp(`(${terms.map(escapeRegex).join("|")})`, "gi");
-    const parts = text.split(regex);
+    const pattern = terms.map(escapeRegex).join("|");
+    const splitRegex = new RegExp(`(${pattern})`, "gi");
+    const matchRegex = new RegExp(`^(?:${pattern})$`, "i");
+    const parts = text.split(splitRegex);
     return parts.map((part, i) =>
-      regex.test(part) ? (
+      matchRegex.test(part) ? (
         <span key={i} className="text-[var(--color-accent-bright)] font-medium bg-[var(--color-accent)]/15 px-0.5 rounded">
           {part}
         </span>
@@ -501,8 +722,8 @@ export function Search() {
     <>
       {/* Trigger button */}
       <button
-        onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-[var(--color-text-muted)] glass-bright hover:text-[var(--color-text)] transition-colors"
+        onClick={openSearch}
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-[var(--color-text-secondary)] bg-[color:rgba(16,16,26,0.92)] border border-[var(--color-border-bright)] shadow-[0_8px_20px_rgba(0,0,0,0.3)] hover:text-[var(--color-text)] transition-colors"
       >
         <SearchIcon className="w-3.5 h-3.5" />
         <span className="hidden sm:inline">Search</span>
@@ -520,7 +741,7 @@ export function Search() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 z-[100] bg-[color:rgba(2,2,8,0.74)] backdrop-blur-sm"
               onClick={() => setOpen(false)}
             />
 
@@ -529,9 +750,9 @@ export function Search() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed top-[15%] left-1/2 -translate-x-1/2 z-[101] w-[90vw] max-w-xl"
+              className="fixed top-[14%] left-1/2 -translate-x-1/2 z-[101] w-[92vw] max-w-xl"
             >
-              <div className="glass-bright rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-[var(--color-border-bright)]">
+              <div className="rounded-2xl overflow-hidden border border-[var(--color-border-bright)] bg-[color:rgba(10,10,18,0.96)] shadow-[0_28px_70px_rgba(0,0,0,0.56)] backdrop-blur-2xl">
                 {/* Search input */}
                 <div className="flex items-center gap-3 px-4 py-3 border-b border-[var(--color-border)]">
                   <SearchIcon className="w-4 h-4 text-[var(--color-text-muted)] shrink-0" />
@@ -539,14 +760,20 @@ export function Search() {
                     ref={inputRef}
                     type="text"
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    onChange={(e) => {
+                      setQuery(e.target.value);
+                      setSelectedIdx(0);
+                    }}
                     onKeyDown={onInputKeyDown}
-                    placeholder="Search documentation..."
+                    placeholder="Search docs, examples, blog, and more..."
                     className="flex-1 bg-transparent text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] outline-none"
                   />
                   {query && (
                     <button
-                      onClick={() => setQuery("")}
+                      onClick={() => {
+                        setQuery("");
+                        setSelectedIdx(0);
+                      }}
                       className="p-1 rounded hover:bg-[var(--color-bg-elevated)] text-[var(--color-text-muted)]"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -576,8 +803,8 @@ export function Search() {
                             onMouseEnter={() => setSelectedIdx(i)}
                             className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-colors ${
                               i === selectedIdx
-                                ? "bg-[var(--color-accent-glow-strong)]"
-                                : "hover:bg-[var(--color-bg-elevated)]"
+                                ? "bg-[color:rgba(34,211,238,0.14)]"
+                                : "hover:bg-[color:rgba(255,255,255,0.03)]"
                             }`}
                           >
                             {entry.heading ? (

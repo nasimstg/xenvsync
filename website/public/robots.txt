@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://xenvsync.softexforge.io/sitemap.xml
+# LLM/GEO hint
+# https://xenvsync.softexforge.io/llms.txt

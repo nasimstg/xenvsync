@@ -175,8 +175,8 @@ export default function RoadmapPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <span className="gradient-text">Built &amp; shipped.</span>{" "}
-            All 12 phases complete.
+            <span className="gradient-text">Roadmap in motion.</span>{" "}
+            Major phases shipped.
           </motion.h1>
 
           <motion.p
@@ -185,8 +185,8 @@ export default function RoadmapPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            From single-user encryption to zero-trust team secrets management —
-            xenvsync v1.12.0 delivers the complete vision across 12 phases.
+            From single-user encryption to zero-trust team secrets management,
+            xenvsync continues to ship across a 12-phase roadmap.
           </motion.p>
 
           <motion.div
@@ -195,11 +195,11 @@ export default function RoadmapPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.35 }}
           >
-            <Stat label="V2 Phases" value="5 / 5" accent />
+            <Stat label="Roadmap Themes" value="12" accent />
             <StatDivider />
-            <Stat label="V1 Phases" value="7 / 7" accent />
+            <Stat label="Commands" value="20+" accent />
             <StatDivider />
-            <Stat label="Tests" value="60+" />
+            <Stat label="Tests" value="140+" />
           </motion.div>
         </div>
       </section>

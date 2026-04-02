@@ -27,10 +27,10 @@ export default function GettingStarted() {
           <li>
             <strong className="text-[var(--color-text)]">Homebrew</strong>,{" "}
             <strong className="text-[var(--color-text)]">npm</strong>,{" "}
-            <strong className="text-[var(--color-text)]">Go 1.22+</strong>, or a{" "}
-            <a href="https://github.com/nasimstg/xenvsync/releases" className="text-[var(--color-accent)] hover:underline" target="_blank" rel="noopener noreferrer">
+            <strong className="text-[var(--color-text)]">Go 1.25+</strong>, or a{" "}
+            <Link href="/docs/installation" className="text-[var(--color-accent)] hover:underline">
               prebuilt binary
-            </a>
+            </Link>
           </li>
         </ul>
       </Section>
